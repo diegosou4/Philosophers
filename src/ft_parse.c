@@ -35,19 +35,14 @@ int parse_philo(int ac,char **av,char **env)
 {   
     int i;
     i = 1;
-    int j;
-    if(ac == 5)
+    while(i < ac)
     {
-        while(i < ac)
+        if(ft_isdigit(av[i]) == 1)
         {
-            if(ft_isdigit(av[i]) == 1)
-            {
-                printf("eu era o mala dos porta mala disparador de alarme nao valia nada \n");
-                exit(0);
-            }
-            i++;
+            printf("eu era o mala dos porta mala disparador de alarme nao valia nada \n");
+            exit(0);
         }
+            i++;
     }
-    printf("menos um maluco na noitada \n");
-    return(0);
+    return(1);
 }

@@ -61,8 +61,8 @@ int main(int ac,char **av, char **env)
 	t_philo *philo;
 	if(ac == 5 || ac == 6)
 	{
-		int i;
-		 i = parse_philo(ac,av,env);
+		parse_philo(ac,av,env);
+		philo = give_philo(ac,av,env);
 	}
 	else{
 		printf("Number Arguments Incorret!!\n");

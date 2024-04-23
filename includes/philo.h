@@ -34,6 +34,6 @@ typedef struct s_philo
 int	ft_isdigit(char *str);
 int parse_philo(int ac,char **av,char **env);
 int	ft_atoi(const char *str);
-
+t_philo *give_philo(int ac,char **av,char **env);
 
 #endif
