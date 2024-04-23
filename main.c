@@ -13,48 +13,59 @@
 
 #include "includes/philo.h"
 
+pthread_mutex_t mutex;
+
 void *ft_try(void *nada)
 {
+	pthread_mutex_lock(&mutex);
 	printf("comer\n");
 	sleep(1);
 	printf("pensar\n");
 	sleep(1);
 	printf("mimir\n");
 	sleep(1);
+	pthread_mutex_unlock(&mutex);
 	return(NULL);
 
 }
 
+// int main(int ac,char **av, char **env)
+// {
+// 	pthread_t *thread;
+// 	int pid;
+	
+
+// 	if(pthread_mutex_init(&mutex,NULL) != 0)
+// 	{
+// 		printf("pega o guanaraba e vem\n");
+// 		return(0);
+// 	}
+// 	thread = malloc(sizeof(pthread_t) * 3);
+
+//  	pthread_create(&(thread[0]), NULL,ft_try,NULL);
+//  	pthread_create(&(thread[1]), NULL,ft_try,NULL);
+//  	pthread_create(&(thread[2]), NULL,ft_try,NULL);
+
+
+//  	pthread_join(thread[0], NULL);
+//  	pthread_join(thread[1], NULL);
+//  	pthread_join(thread[2], NULL);
+// 	pthread_mutex_destroy(&mutex);
+
+// 	return(0);
+// }
+
+
 int main(int ac,char **av, char **env)
 {
-	pthread_t *thread;
-	int pid;
-
-	thread = malloc(sizeof(pthread_t) * 10);
-
- 	pthread_create(&(thread[0]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[1]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[2]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[3]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[4]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[5]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[6]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[7]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[8]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[9]), NULL,ft_try,NULL);
- 	pthread_create(&(thread[10]), NULL,ft_try,NULL);
-
- 	pthread_join(thread[0], NULL);
- 	pthread_join(thread[1], NULL);
- 	pthread_join(thread[2], NULL);
- 	pthread_join(thread[3], NULL);
- 	pthread_join(thread[4], NULL);
- 	pthread_join(thread[5], NULL);
- 	pthread_join(thread[6], NULL);
- 	pthread_join(thread[7], NULL);
- 	pthread_join(thread[8], NULL);
- 	pthread_join(thread[9], NULL);
- 	pthread_join(thread[10], NULL);
-
+	t_philo *philo;
+	if(ac == 5 || ac == 6)
+	{
+		int i;
+		 i = parse_philo(ac,av,env);
+	}
+	else{
+		printf("Number Arguments Incorret!!\n");
+	}
 	return(0);
 }

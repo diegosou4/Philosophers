@@ -20,4 +20,20 @@
 #include <pthread.h>
 
 
+typedef struct s_philo
+{
+    char **cpyenv;
+    int philo;
+    int eat;
+    int dead;
+    int stop;
+    int sleep;
+    int xtime;
+}       t_philo;
+
+int	ft_isdigit(char *str);
+int parse_philo(int ac,char **av,char **env);
+int	ft_atoi(const char *str);
+
+
 #endif
