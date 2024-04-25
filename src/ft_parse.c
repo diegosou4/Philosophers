@@ -13,7 +13,7 @@
 
 #include "../includes/philo.h"
 
-t_philo *give_philo(int ac,char **av,char **env)
+t_philo *give_philo(int ac,char **av)
 {
     t_philo *philo;
 
@@ -31,7 +31,7 @@ t_philo *give_philo(int ac,char **av,char **env)
 
 }
 
-int parse_philo(int ac,char **av,char **env)
+int parse_philo(int ac,char **av)
 {   
     int i;
     i = 1;
@@ -39,9 +39,10 @@ int parse_philo(int ac,char **av,char **env)
     {
         if(ft_isdigit(av[i]) == 1)
         {
-            printf("eu era o mala dos porta mala disparador de alarme nao valia nada \n");
+            printf("Erro parse\n");
             exit(0);
         }
+
             i++;
     }
     return(1);

@@ -56,13 +56,16 @@ void *ft_try(void *nada)
 // }
 
 
-int main(int ac,char **av, char **env)
+int main(int ac,char **av)
 {
 	t_philo *philo;
 	if(ac == 5 || ac == 6)
 	{
-		parse_philo(ac,av,env);
-		philo = give_philo(ac,av,env);
+		if(parse_philo(ac,av) == 1)
+		{
+			philo_init(ac,av);
+		}
+		philo = give_philo(ac,av);
 	}
 	else{
 		printf("Number Arguments Incorret!!\n");

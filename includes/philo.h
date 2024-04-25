@@ -18,22 +18,39 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/time.h>
 
+typedef struct g_mutex
+{
+    pthread_mutex_t mutex;
+}   t_mutex;
 
 typedef struct s_philo
 {
-    char **cpyenv;
-    int philo;
-    int eat;
-    int dead;
-    int stop;
-    int sleep;
+    pthread_t thread;
+    int id;
+    size_t time_eat;
+    size_t time_dead;
+    size_t time_sleep;
+    int n_time_eat;
+    int r_fork;
+    int l_fork;
     int xtime;
 }       t_philo;
 
+typedef struct s_table
+{
+    t_philo *philo;
+
+
+} t_table;
+
+
+
 int	ft_isdigit(char *str);
-int parse_philo(int ac,char **av,char **env);
+int parse_philo(int ac,char **av);
 int	ft_atoi(const char *str);
-t_philo *give_philo(int ac,char **av,char **env);
+t_philo *give_philo(int ac,char **av);
+void philo_init(int ac,char **av);
 
 #endif
