@@ -40,9 +40,11 @@ typedef struct s_philo
 
 typedef struct s_table
 {
+    int				dead_flag;
+    pthread_mutex_t dead_lock;
+    pthread_mutex_t dead_eat;
+    pthread_mutex_t dead_sleep;
     t_philo *philo;
-
-
 } t_table;
 
 
