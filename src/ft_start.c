@@ -15,10 +15,30 @@
 
 void philo_init(int ac,char **av)
 {
-    t_philo *philo;
+    int i;
+    i = 0;
+    t_table *table;
+    int len;
 
-    philo = give_philo(ac,av);
+    len = ft_atoi(av[1]);
+    if(len <= 0)
+    {
+        write(2, "Number Philo incorrent \n",25);
+        exit(0);
+    }
+    table = malloc(sizeof(t_table) * 1);
+    table->philo = malloc(sizeof(t_philo) * len);
+    while(i < len)
+    {
+        give_philo(ac, av, &table->philo[i]);
+        i++;
+    }
+    
+    
+}
 
+void print_struct(t_table)
+{
 
 
 }

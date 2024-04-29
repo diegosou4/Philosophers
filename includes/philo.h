@@ -32,7 +32,6 @@ typedef struct s_philo
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
-    int n_time_eat;
     int r_fork;
     int l_fork;
     int xtime;
@@ -52,7 +51,7 @@ typedef struct s_table
 int	ft_isdigit(char *str);
 int parse_philo(int ac,char **av);
 int	ft_atoi(const char *str);
-t_philo *give_philo(int ac,char **av);
+void give_philo(int ac,char **av,t_philo *philo);
 void philo_init(int ac,char **av);
 
 #endif
