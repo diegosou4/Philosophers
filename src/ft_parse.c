@@ -6,12 +6,13 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 16:24:40 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/01 10:41:40 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:41:35 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../includes/philo.h"
+
 
 void give_philo(int ac,char **av, t_philo *philo)
 {
@@ -25,7 +26,6 @@ void give_philo(int ac,char **av, t_philo *philo)
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
     philo->r_fork = 1;
-    philo->l_fork = -1;
     if(ac == 6)
         philo->xtime = ft_atoi(av[5]);
     else

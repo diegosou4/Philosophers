@@ -6,13 +6,13 @@
 #    By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/23 16:12:34 by diegmore          #+#    #+#              #
-#    Updated: 2024/05/01 10:49:46 by diemorei         ###   ########.fr        #
+#    Updated: 2024/05/01 11:08:46 by diemorei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 Name = philo
 
-CC = cc
+CC = cc -pthread
 
 CFLAGS = #-Wall -Wextra -Werror
 

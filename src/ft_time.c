@@ -3,7 +3,6 @@
 #include "../includes/philo.h"
 
 
-
 int ft_usleep(size_t milliseconds)
 {
     size_t start;

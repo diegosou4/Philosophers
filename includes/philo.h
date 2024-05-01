@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:22:51 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/01 10:54:02 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:55:46 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_philo
     size_t time_dead;
     size_t time_sleep;
     int r_fork;
-    int l_fork;
+    int *l_fork;
     int xtime;
 }       t_philo;
 
@@ -54,7 +54,7 @@ int	ft_atoi(const char *str);
 void give_philo(int ac,char **av,t_philo *philo);
 void philo_init(int ac,char **av);
 void print_struct(t_philo *philo);
-
+int ft_usleep(size_t milliseconds);
 
 // Time
 
