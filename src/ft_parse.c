@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parse.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegmore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 16:24:40 by diegmore          #+#    #+#             */
-/*   Updated: 2024/04/23 16:24:41 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/05/01 10:41:40 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 
 void give_philo(int ac,char **av, t_philo *philo)
 {
-    philo = (t_philo *)malloc(sizeof(t_philo) * 1);
+    static unsigned int i;
+    
     if(!philo)
-        return(NULL);
+        return;
+    philo->id = i;
+    i++;
     philo->time_dead = ft_atoi(av[2]);
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
@@ -27,7 +30,6 @@ void give_philo(int ac,char **av, t_philo *philo)
         philo->xtime = ft_atoi(av[5]);
     else
         philo->xtime = -1;
-    
 }
 int parse_philo(int ac,char **av)
 {   
