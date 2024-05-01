@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegmore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:22:51 by diegmore          #+#    #+#             */
-/*   Updated: 2024/04/23 14:55:06 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/05/01 10:54:02 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,11 @@ int parse_philo(int ac,char **av);
 int	ft_atoi(const char *str);
 void give_philo(int ac,char **av,t_philo *philo);
 void philo_init(int ac,char **av);
+void print_struct(t_philo *philo);
+
+
+// Time
+
+size_t get_curr_time(void);
 
 #endif
