@@ -13,62 +13,86 @@
 
 #include "../includes/philo.h"
 
+pthread_mutex_t *mutexes;
+
+pthread_barrier_t barrier;
+
 pthread_mutex_t *my_mutex(void)
 {
     static pthread_mutex_t mutex;
     return(&mutex);
 }
 
-void rotine(t_philo *philo)
-{
-    pthread_mutex_lock(my_mutex());
-    printf("%i id philo\n",philo->id);
+void rotine(t_philo *philo) {
+    pthread_mutex_lock(&mutexes[philo->id]);
+    printf("%i id philo\n", philo->id);
     ft_usleep(philo->time_eat);
-    pthread_mutex_unlock(my_mutex());
+    // Desbloqueie o próximo mutex
+    if (philo->id < philo->qtphilo - 1) {
+        pthread_mutex_unlock(&mutexes[philo->id + 1]);
+    }
+    pthread_barrier_wait(&barrier);
 }
 
-void philo_init(int ac,char **av)
+void philo_init(int ac, char **av)
 {
     int i;
-    i = 0;
     t_table *table;
     t_philo *ptr;
     int qtphilo;
-
+      
     qtphilo = ft_atoi(av[1]);
-    if(qtphilo <= 0)
+    if (qtphilo <= 0)
     {
-        write(2, "Number Philo incorrent \n",25);
+        write(2, "Number Philo incorrent \n", 25);
         exit(0);
     }
-    table = malloc(sizeof(t_table) * 1);
+    table = malloc(sizeof(t_table));
     table->philo = malloc(sizeof(t_philo) * qtphilo);
-    while(i < qtphilo)
+     pthread_barrier_init(&barrier, NULL, qtphilo);
+    // Inicialização dos filósofos
+    for (i = 0; i < qtphilo; i++)
     {
         give_philo(ac, av, &table->philo[i]);
-        i++;
+        table->philo[i].qtphilo = qtphilo;
     }
+
+    mutexes = malloc(sizeof(pthread_mutex_t) * qtphilo);
+    for (i = 0; i < qtphilo; i++) {
+    pthread_mutex_init(&mutexes[i], NULL);
+    // Bloqueie todos os mutexes exceto o primeiro
+    if (i != 0) {
+        pthread_mutex_lock(&mutexes[i]);
+    }
+}
+
     ptr = table->philo;
-    i = 0;
-    pthread_mutex_init(my_mutex(), NULL);
-    while (i < qtphilo)
+
+    // Criação das threads
+    for (i = 0; i < qtphilo; i++)
     {
         pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
-        i++;    
     }
-    i = 0;
-    while(i < qtphilo)
+
+    // Espera pelas threads
+    for (i = 0; i < qtphilo; i++)
     {
         pthread_join(ptr[i].thread, NULL);
-        i++;
     }
-    // while(i < qtphilo)
-    // {
-    //     print_struct(&table->philo[i]);
-    //     i++;
-    // }
-    
+
+    // Destruição do mutex
+
+   for (i = 0; i < qtphilo; i++) {
+    pthread_mutex_destroy(&mutexes[i]);
+    }
+    free(mutexes);
+    pthread_barrier_destroy(&barrier);
+    // Liberação de memória
+    free(table->philo);
+    free(table);
 }
+
+
 
 void print_struct(t_philo *philo)
 {

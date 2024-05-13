@@ -28,7 +28,9 @@ typedef struct g_mutex
 typedef struct s_philo
 {
     pthread_t thread;
+    pthread_mutex_t my_mutex;
     int id;
+    int qtphilo;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
