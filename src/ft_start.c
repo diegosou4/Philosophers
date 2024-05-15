@@ -15,8 +15,6 @@
 
 pthread_mutex_t *mutexes;
 
-pthread_barrier_t barrier;
-
 pthread_mutex_t *my_mutex(void)
 {
     static pthread_mutex_t mutex;
@@ -24,14 +22,17 @@ pthread_mutex_t *my_mutex(void)
 }
 
 void rotine(t_philo *philo) {
-    pthread_mutex_lock(&mutexes[philo->id]);
-    printf("%i id philo\n", philo->id);
+    while(philo->xtime > 0)
+    {
+    pthread_mutex_lock(&mutexes[0]);
+    printf("%i Comer \n",(int)get_curr_time());
+    printf("%i Pensar \n",(int)get_curr_time());
+    printf("%i Mimir \n",(int)get_curr_time());
     ft_usleep(philo->time_eat);
-    // Desbloqueie o próximo mutex
-    if (philo->id < philo->qtphilo - 1) {
-        pthread_mutex_unlock(&mutexes[philo->id + 1]);
+    
+    pthread_mutex_unlock(&mutexes[0]);
+    philo->xtime -= 1;
     }
-    pthread_barrier_wait(&barrier);
 }
 
 void philo_init(int ac, char **av)
@@ -49,7 +50,6 @@ void philo_init(int ac, char **av)
     }
     table = malloc(sizeof(t_table));
     table->philo = malloc(sizeof(t_philo) * qtphilo);
-     pthread_barrier_init(&barrier, NULL, qtphilo);
     // Inicialização dos filósofos
     for (i = 0; i < qtphilo; i++)
     {
@@ -86,7 +86,6 @@ void philo_init(int ac, char **av)
     pthread_mutex_destroy(&mutexes[i]);
     }
     free(mutexes);
-    pthread_barrier_destroy(&barrier);
     // Liberação de memória
     free(table->philo);
     free(table);

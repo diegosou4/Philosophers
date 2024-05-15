@@ -12,9 +12,9 @@
 
 Name = philo
 
-CC = cc -pthread
+CC = cc -g 
 
-CFLAGS = #-Wall -Wextra -Werror
+CFLAGS = -pthread #-fsanitize=thread #-Wall -Wextra -Werror
 
 SRC = ft_check.c ft_parse.c ft_start.c ft_time.c
 
