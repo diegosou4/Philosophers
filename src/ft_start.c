@@ -22,16 +22,18 @@ pthread_mutex_t *my_mutex(void)
 }
 
 void rotine(t_philo *philo) {
-    while(philo->xtime > 0)
+    while(philo->xtime > 0 || philo->xtime == -1)
     {
     pthread_mutex_lock(&mutexes[0]);
     printf("%i Comer \n",(int)get_curr_time());
     printf("%i Pensar \n",(int)get_curr_time());
     printf("%i Mimir \n",(int)get_curr_time());
+    printf("\n");
     ft_usleep(philo->time_eat);
     
     pthread_mutex_unlock(&mutexes[0]);
-    philo->xtime -= 1;
+    if(philo->xtime > 0)
+        philo->xtime -= 1;
     }
 }
 
