@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:23:44 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/01 14:55:33 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:41:23 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ pthread_mutex_t *my_mutex(void)
 void rotine(t_table *table) {
     int qtphilo = table->qtphilo;
     while (1 && table->philo[table->num].xtime > 0) {
-        pthread_mutex_lock(&table->sal);
+        if((table->philo[table->num].id % 2) == 0 )
+        {
+            ft_usleep(10);
+        }
         printf("%zu has taken a fork %i\n",get_curr_time(), table->philo[table->num].id);
         table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
         table->philo[table->num].r_fork = &table->philo[(table->num + 1) % qtphilo].my_mutex; // Evita acesso fora do limite
@@ -41,7 +44,8 @@ void rotine(t_table *table) {
         printf("\n");
         // printf("%i xtime\n", table->philo[table->num].xtime);
         // printf("%i table num\n", table->num);
-        pthread_mutex_unlock(&table->sal);
+        table->num++;
+      
     }
 }
 
@@ -71,10 +75,10 @@ void philo_init(int ac, char **av)
     pthread_mutex_init(&table->sal, NULL);
 
     ptr = table->philo;
-    for(i = 0; i < qtphilo; i++)
-    {
-        printf("philo id aqui %i\n", ptr[i].id);
-    }
+    // for(i = 0; i < qtphilo; i++)
+    // {
+    //     printf("philo id aqui %i\n", ptr[i].id);
+    // }
     table->num = 0;
     // Criação das threads
     for (i = 0; i < qtphilo; i++)
