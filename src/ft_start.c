@@ -25,19 +25,19 @@ void rotine(t_table *table) {
     int qtphilo = table->qtphilo;
     while (1 && table->philo[table->num].xtime > 0) {
         pthread_mutex_lock(&table->sal);
-        printf("%i has taken a fork %i\n",(unsigned int)get_curr_time(), table->philo[table->num].id);
+        printf("%zu has taken a fork %i\n",get_curr_time(), table->philo[table->num].id);
         table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
         table->philo[table->num].r_fork = &table->philo[(table->num + 1) % qtphilo].my_mutex; // Evita acesso fora do limite
         pthread_mutex_lock(table->philo[table->num].l_fork);
         pthread_mutex_lock(table->philo[table->num].r_fork);
-        printf("%i is eating %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        printf("%zu is eating %i\n",get_curr_time(),table->philo[table->num].id);
         ft_usleep(table->philo[table->num].time_eat);
         table->philo[table->num].xtime--;
         pthread_mutex_unlock(table->philo[table->num].l_fork);
         pthread_mutex_unlock(table->philo[table->num].r_fork);
-        printf("%i is sleeping %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        printf("%zu is sleeping %i\n",get_curr_time(),table->philo[table->num].id);
         ft_usleep(table->philo[table->num].time_sleep);
-        printf("%i is thinking %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        printf("%zu is thinking %i\n",get_curr_time(),table->philo[table->num].id);
         printf("\n");
         // printf("%i xtime\n", table->philo[table->num].xtime);
         // printf("%i table num\n", table->num);
@@ -68,21 +68,26 @@ void philo_init(int ac, char **av)
         table->philo[i].qtphilo = qtphilo;
     }
 
-    mutexes = malloc(sizeof(pthread_mutex_t) * qtphilo);
     pthread_mutex_init(&table->sal, NULL);
 
     ptr = table->philo;
-
+    for(i = 0; i < qtphilo; i++)
+    {
+        printf("philo id aqui %i\n", ptr[i].id);
+    }
+    table->num = 0;
     // Criação das threads
-    for (i = 0; i < qtphilo; ++i)
+    for (i = 0; i < qtphilo; i++)
     {
         pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, (void *)table);
+        
     }
 
     // Espera pelas threads
     for (i = 0; i < qtphilo; i++)
     {
         pthread_join(ptr[i].thread, NULL);
+        table->num++;
     }
     for(i = 0; i < qtphilo; i++)
     {
