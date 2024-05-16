@@ -34,17 +34,20 @@ typedef struct s_philo
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
-    int r_fork;
-    int *l_fork;
+    pthread_mutex_t *r_fork;
+    pthread_mutex_t *l_fork;
     int xtime;
 }       t_philo;
 
 typedef struct s_table
 {
     int				dead_flag;
+    int         qtphilo;
     pthread_mutex_t dead_lock;
     pthread_mutex_t dead_eat;
     pthread_mutex_t dead_sleep;
+    pthread_mutex_t sal;
+    int num;
     t_philo *philo;
 } t_table;
 

@@ -25,9 +25,14 @@ void give_philo(int ac,char **av, t_philo *philo)
     philo->time_dead = ft_atoi(av[2]);
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
-    philo->r_fork = 1;
+    pthread_mutex_init(&philo->my_mutex, NULL);
+    // philo->r_fork = 1;
     if(ac == 6)
+    {
         philo->xtime = ft_atoi(av[5]);
+        printf(" x time %i\n", philo->xtime);
+    }
+        
     else
         philo->xtime = -1;
 }

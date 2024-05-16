@@ -21,19 +21,27 @@ pthread_mutex_t *my_mutex(void)
     return(&mutex);
 }
 
-void rotine(t_philo *philo) {
-    while(philo->xtime > 0 || philo->xtime == -1)
-    {
-    pthread_mutex_lock(&mutexes[0]);
-    printf("%i Comer \n",(int)get_curr_time());
-    printf("%i Pensar \n",(int)get_curr_time());
-    printf("%i Mimir \n",(int)get_curr_time());
-    printf("\n");
-    ft_usleep(philo->time_eat);
-    
-    pthread_mutex_unlock(&mutexes[0]);
-    if(philo->xtime > 0)
-        philo->xtime -= 1;
+void rotine(t_table *table) {
+    int qtphilo = table->qtphilo;
+    while (1 && table->philo[table->num].xtime > 0) {
+        pthread_mutex_lock(&table->sal);
+        printf("%i has taken a fork %i\n",(unsigned int)get_curr_time(), table->philo[table->num].id);
+        table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
+        table->philo[table->num].r_fork = &table->philo[(table->num + 1) % qtphilo].my_mutex; // Evita acesso fora do limite
+        pthread_mutex_lock(table->philo[table->num].l_fork);
+        pthread_mutex_lock(table->philo[table->num].r_fork);
+        printf("%i is eating %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        ft_usleep(table->philo[table->num].time_eat);
+        table->philo[table->num].xtime--;
+        pthread_mutex_unlock(table->philo[table->num].l_fork);
+        pthread_mutex_unlock(table->philo[table->num].r_fork);
+        printf("%i is sleeping %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        ft_usleep(table->philo[table->num].time_sleep);
+        printf("%i is thinking %i\n",(unsigned int)get_curr_time(),table->philo[table->num].id);
+        printf("\n");
+        // printf("%i xtime\n", table->philo[table->num].xtime);
+        // printf("%i table num\n", table->num);
+        pthread_mutex_unlock(&table->sal);
     }
 }
 
@@ -52,6 +60,7 @@ void philo_init(int ac, char **av)
     }
     table = malloc(sizeof(t_table));
     table->philo = malloc(sizeof(t_philo) * qtphilo);
+    table->qtphilo = qtphilo; // Adicione esta linha para armazenar o número total de filósofos
     // Inicialização dos filósofos
     for (i = 0; i < qtphilo; i++)
     {
@@ -60,20 +69,14 @@ void philo_init(int ac, char **av)
     }
 
     mutexes = malloc(sizeof(pthread_mutex_t) * qtphilo);
-    for (i = 0; i < qtphilo; i++) {
-    pthread_mutex_init(&mutexes[i], NULL);
-    // Bloqueie todos os mutexes exceto o primeiro
-    if (i != 0) {
-        pthread_mutex_lock(&mutexes[i]);
-    }
-}
+    pthread_mutex_init(&table->sal, NULL);
 
     ptr = table->philo;
 
     // Criação das threads
-    for (i = 0; i < qtphilo; i++)
+    for (i = 0; i < qtphilo; ++i)
     {
-        pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
+        pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, (void *)table);
     }
 
     // Espera pelas threads
@@ -81,27 +84,31 @@ void philo_init(int ac, char **av)
     {
         pthread_join(ptr[i].thread, NULL);
     }
-
-    // Destruição do mutex
-
-   for (i = 0; i < qtphilo; i++) {
-    pthread_mutex_destroy(&mutexes[i]);
+    for(i = 0; i < qtphilo; i++)
+    {
+         pthread_mutex_destroy(&ptr[i].my_mutex);
     }
-    free(mutexes);
+
+    pthread_mutex_destroy(&table->sal);
+
     // Liberação de memória
+    free(mutexes);
     free(table->philo);
     free(table);
 }
 
 
 
-void print_struct(t_philo *philo)
-{
-    printf("%i id philo\n",philo->id);
-    printf("time_eat %i \n", (int)philo->time_eat);
-    printf("time_dead %i \n", (int)philo->time_dead);
-    printf("time_sleep %i \n", (int)philo->time_sleep);
-    printf("r_fork %i \n",philo->r_fork);
-    // printf("l_fork %i \n",philo->l_fork);
-    printf("x time %i \n",philo->xtime);
-}
+
+
+
+// void print_struct(t_philo *philo)
+// {
+//     printf("%i id philo\n",philo->id);
+//     printf("time_eat %i \n", (int)philo->time_eat);
+//     printf("time_dead %i \n", (int)philo->time_dead);
+//     printf("time_sleep %i \n", (int)philo->time_sleep);
+//     printf("r_fork %i \n",philo->r_fork);
+//     // printf("l_fork %i \n",philo->l_fork);
+//     printf("x time %i \n",philo->xtime);
+// }
