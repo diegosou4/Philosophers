@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:23:44 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/16 22:41:23 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:43:27 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ pthread_mutex_t *my_mutex(void)
 void rotine(t_table *table) {
     int qtphilo = table->qtphilo;
     while (1 && table->philo[table->num].xtime > 0) {
+        if(table->num == qtphilo)
+        {
+            table->num = 0;
+        }
         if((table->philo[table->num].id % 2) == 0 )
         {
             ft_usleep(10);
@@ -38,13 +42,15 @@ void rotine(t_table *table) {
         table->philo[table->num].xtime--;
         pthread_mutex_unlock(table->philo[table->num].l_fork);
         pthread_mutex_unlock(table->philo[table->num].r_fork);
+    
         printf("%zu is sleeping %i\n",get_curr_time(),table->philo[table->num].id);
         ft_usleep(table->philo[table->num].time_sleep);
         printf("%zu is thinking %i\n",get_curr_time(),table->philo[table->num].id);
+        table->num++;
         printf("\n");
         // printf("%i xtime\n", table->philo[table->num].xtime);
         // printf("%i table num\n", table->num);
-        table->num++;
+      
       
     }
 }
