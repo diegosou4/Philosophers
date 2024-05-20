@@ -31,14 +31,12 @@ void take_fork(t_table *table , int id)
     }
     pthread_mutex_lock(table->philo[id].l_fork);
     pthread_mutex_lock(table->philo[id].r_fork);
-    printf("%d has taken a fork %zu \n",table->philo[id].id,time_diff(table->start_time));
+    printf("%zu %d has taken a fork\n",time_diff(table->start_time),table->philo[id].id);
 }
 void eat(t_table *table, int id)
 {
-    size_t time;
-    time = get_current_time();
     pthread_mutex_lock(&table->dead_eat);
-    printf("%d is eating %zu\n", table->philo[id].id, time_diff(table->start_time));
+    printf("%zu %d is eating\n",time_diff(table->start_time),table->philo[id].id);
     ft_usleep(table->philo[id].time_eat);
     table->philo[id].xtime--;
     pthread_mutex_unlock(&table->dead_eat);
@@ -48,10 +46,8 @@ void eat(t_table *table, int id)
 
 void sleep_philo(t_table *table, int id)
 {
-    size_t time;
-    time = get_current_time();
     pthread_mutex_lock(&table->dead_sleep);
-    printf("%d is sleeping %zu \n",table->philo[id].id,time_diff(table->start_time));
+    printf("%zu %d is sleeping\n",time_diff(table->start_time),table->philo[id].id);
     ft_usleep(table->philo[id].time_sleep);
     pthread_mutex_unlock(&table->dead_sleep);
 }
@@ -60,10 +56,7 @@ void thinking(t_table *table, int id)
 {
     size_t time;
     time = get_current_time();
-    printf("%d is thinking %zu \n",table->philo[id].id,time_diff(table->start_time));
-
-    printf("\n");
-
+    printf("%zu %d is thinking\n",time_diff(table->start_time),table->philo[id].id);
 }
 
 void rotine(t_table *table) 
