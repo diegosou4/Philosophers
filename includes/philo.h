@@ -44,6 +44,7 @@ typedef struct s_table
 {
     int				dead_flag;
     int         qtphilo;
+    size_t start_time;
     pthread_mutex_t dead_lock;
     pthread_mutex_t dead_eat;
     pthread_mutex_t dead_sleep;
@@ -64,6 +65,7 @@ int ft_usleep(size_t milliseconds);
 
 // Time
 
-size_t get_current_time(void);
 
+size_t	get_current_time(void);
+size_t time_diff(size_t time);
 #endif

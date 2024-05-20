@@ -22,11 +22,6 @@ pthread_mutex_t *my_mutex(void)
 }
 void take_fork(t_table *table , int id)
 {
-    size_t time;
-
-    time = get_current_time();
-
-    printf("%zu has taken a fork %i\n",time, table->philo[id].id);
     table->philo[id].r_fork = &table->philo[id].my_mutex;
     table->philo[id].l_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; 
     if(table->philo[id].id % 2 == 0)
@@ -36,13 +31,14 @@ void take_fork(t_table *table , int id)
     }
     pthread_mutex_lock(table->philo[id].l_fork);
     pthread_mutex_lock(table->philo[id].r_fork);
+    printf("%d has taken a fork %zu \n",table->philo[id].id,time_diff(table->start_time));
 }
 void eat(t_table *table, int id)
 {
     size_t time;
     time = get_current_time();
     pthread_mutex_lock(&table->dead_eat);
-    printf("%zu is eating %i\n",time,table->philo[id].id);
+    printf("%d is eating %zu\n", table->philo[id].id, time_diff(table->start_time));
     ft_usleep(table->philo[id].time_eat);
     table->philo[id].xtime--;
     pthread_mutex_unlock(&table->dead_eat);
@@ -52,16 +48,19 @@ void eat(t_table *table, int id)
 
 void sleep_philo(t_table *table, int id)
 {
-
+    size_t time;
+    time = get_current_time();
     pthread_mutex_lock(&table->dead_sleep);
-    printf("%zu is sleeping %i\n",get_current_time(),table->philo[id].id);
+    printf("%d is sleeping %zu \n",table->philo[id].id,time_diff(table->start_time));
     ft_usleep(table->philo[id].time_sleep);
     pthread_mutex_unlock(&table->dead_sleep);
 }
 
 void thinking(t_table *table, int id)
 {
-    printf("%zu is thinking %i\n",get_current_time(),table->philo[id].id);
+    size_t time;
+    time = get_current_time();
+    printf("%d is thinking %zu \n",table->philo[id].id,time_diff(table->start_time));
 
     printf("\n");
 
@@ -74,11 +73,13 @@ void rotine(t_table *table)
     pthread_mutex_lock(&table->num_lock);
     if(id == table->qtphilo)
         id = 0;
-    else
+    else if(id != table->qtphilo && id != -1)
         id = table->num++;
     pthread_mutex_unlock(&table->num_lock);
-    while (1 && table->philo[id].xtime  > 0) 
+
+    while (1 && table->philo[id].xtime  > 0 || table->philo[id].xtime == -1) 
     {
+        table->start_time = get_current_time();
         take_fork(table,id);
         eat(table,id);
         sleep_philo(table,id);
