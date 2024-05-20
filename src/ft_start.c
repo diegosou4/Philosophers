@@ -20,6 +20,50 @@ pthread_mutex_t *my_mutex(void)
     static pthread_mutex_t mutex;
     return(&mutex);
 }
+void take_fork(t_table *table)
+{
+    printf("%zu has taken a fork %i\n",get_curr_time(), table->philo[table->num].id);
+   
+    table->philo[table->num].r_fork = &table->philo[table->num].my_mutex;
+    table->philo[table->num].l_fork = &table->philo[(table->num + 1) % table->qtphilo].my_mutex; 
+    if(table->philo[table->num].id % 2 == 0)
+    {
+        table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
+        table->philo[table->num].r_fork = &table->philo[(table->num + 1) % table->qtphilo].my_mutex; // Evita acesso fora do limite
+    }
+    
+    pthread_mutex_lock(table->philo[table->num].l_fork);
+    pthread_mutex_lock(table->philo[table->num].r_fork);
+
+}
+void eat(t_table *table)
+{
+    pthread_mutex_lock(&table->dead_eat);
+  
+    printf("%zu is eating %i\n",get_curr_time(),table->philo[table->num].id);
+    ft_usleep(table->philo[table->num].time_eat);
+    table->philo[table->num].xtime--;
+    pthread_mutex_unlock(&table->dead_eat);
+    pthread_mutex_unlock(table->philo[table->num].l_fork);
+    pthread_mutex_unlock(table->philo[table->num].r_fork);
+}
+
+void sleep_philo(t_table *table)
+{
+
+    pthread_mutex_lock(&table->dead_sleep);
+    printf("%zu is sleeping %i\n",get_curr_time(),table->philo[table->num].id);
+    ft_usleep(table->philo[table->num].time_sleep);
+    pthread_mutex_unlock(&table->dead_sleep);
+}
+
+void thinking(t_table *table)
+{
+    printf("%zu is thinking %i\n",get_curr_time(),table->philo[table->num].id);
+
+    printf("\n");
+
+}
 
 void rotine(t_table *table) {
     int qtphilo = table->qtphilo;
@@ -28,30 +72,15 @@ void rotine(t_table *table) {
         {
             table->num = 0;
         }
-        if((table->philo[table->num].id % 2) == 0 )
-        {
-            ft_usleep(10);
-        }
-        printf("%zu has taken a fork %i\n",get_curr_time(), table->philo[table->num].id);
-        table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
-        table->philo[table->num].r_fork = &table->philo[(table->num + 1) % qtphilo].my_mutex; // Evita acesso fora do limite
-        pthread_mutex_lock(table->philo[table->num].l_fork);
-        pthread_mutex_lock(table->philo[table->num].r_fork);
-        printf("%zu is eating %i\n",get_curr_time(),table->philo[table->num].id);
-        ft_usleep(table->philo[table->num].time_eat);
-        table->philo[table->num].xtime--;
-        pthread_mutex_unlock(table->philo[table->num].l_fork);
-        pthread_mutex_unlock(table->philo[table->num].r_fork);
-    
-        printf("%zu is sleeping %i\n",get_curr_time(),table->philo[table->num].id);
-        ft_usleep(table->philo[table->num].time_sleep);
-        printf("%zu is thinking %i\n",get_curr_time(),table->philo[table->num].id);
-        table->num++;
-        printf("\n");
-        // printf("%i xtime\n", table->philo[table->num].xtime);
-        // printf("%i table num\n", table->num);
-      
-      
+        // if((table->philo[table->num].id % 2) == 0 )
+        // {
+        //     ft_usleep(10);
+        // }
+        take_fork(table);
+        eat(table);
+        sleep_philo(table);
+        thinking(table);
+            table->num++;
     }
 }
 
