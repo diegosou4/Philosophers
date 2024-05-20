@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 typedef struct g_mutex
 {
@@ -46,7 +47,7 @@ typedef struct s_table
     pthread_mutex_t dead_lock;
     pthread_mutex_t dead_eat;
     pthread_mutex_t dead_sleep;
-    pthread_mutex_t sal;
+    pthread_mutex_t num_lock;
     int num;
     t_philo *philo;
 } t_table;
@@ -63,6 +64,6 @@ int ft_usleep(size_t milliseconds);
 
 // Time
 
-size_t get_curr_time(void);
+size_t get_current_time(void);
 
 #endif

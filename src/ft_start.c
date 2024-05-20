@@ -20,67 +20,69 @@ pthread_mutex_t *my_mutex(void)
     static pthread_mutex_t mutex;
     return(&mutex);
 }
-void take_fork(t_table *table)
+void take_fork(t_table *table , int id)
 {
-    printf("%zu has taken a fork %i\n",get_curr_time(), table->philo[table->num].id);
-   
-    table->philo[table->num].r_fork = &table->philo[table->num].my_mutex;
-    table->philo[table->num].l_fork = &table->philo[(table->num + 1) % table->qtphilo].my_mutex; 
-    if(table->philo[table->num].id % 2 == 0)
+    size_t time;
+
+    time = get_current_time();
+
+    printf("%zu has taken a fork %i\n",time, table->philo[id].id);
+    table->philo[id].r_fork = &table->philo[id].my_mutex;
+    table->philo[id].l_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; 
+    if(table->philo[id].id % 2 == 0)
     {
-        table->philo[table->num].l_fork = &table->philo[table->num].my_mutex;
-        table->philo[table->num].r_fork = &table->philo[(table->num + 1) % table->qtphilo].my_mutex; // Evita acesso fora do limite
+        table->philo[id].l_fork = &table->philo[id].my_mutex;
+        table->philo[id].r_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; // Evita acesso fora do limite
     }
-    
-    pthread_mutex_lock(table->philo[table->num].l_fork);
-    pthread_mutex_lock(table->philo[table->num].r_fork);
-
+    pthread_mutex_lock(table->philo[id].l_fork);
+    pthread_mutex_lock(table->philo[id].r_fork);
 }
-void eat(t_table *table)
+void eat(t_table *table, int id)
 {
+    size_t time;
+    time = get_current_time();
     pthread_mutex_lock(&table->dead_eat);
-  
-    printf("%zu is eating %i\n",get_curr_time(),table->philo[table->num].id);
-    ft_usleep(table->philo[table->num].time_eat);
-    table->philo[table->num].xtime--;
+    printf("%zu is eating %i\n",time,table->philo[id].id);
+    ft_usleep(table->philo[id].time_eat);
+    table->philo[id].xtime--;
     pthread_mutex_unlock(&table->dead_eat);
-    pthread_mutex_unlock(table->philo[table->num].l_fork);
-    pthread_mutex_unlock(table->philo[table->num].r_fork);
+    pthread_mutex_unlock(table->philo[id].l_fork);
+    pthread_mutex_unlock(table->philo[id].r_fork);
 }
 
-void sleep_philo(t_table *table)
+void sleep_philo(t_table *table, int id)
 {
 
     pthread_mutex_lock(&table->dead_sleep);
-    printf("%zu is sleeping %i\n",get_curr_time(),table->philo[table->num].id);
-    ft_usleep(table->philo[table->num].time_sleep);
+    printf("%zu is sleeping %i\n",get_current_time(),table->philo[id].id);
+    ft_usleep(table->philo[id].time_sleep);
     pthread_mutex_unlock(&table->dead_sleep);
 }
 
-void thinking(t_table *table)
+void thinking(t_table *table, int id)
 {
-    printf("%zu is thinking %i\n",get_curr_time(),table->philo[table->num].id);
+    printf("%zu is thinking %i\n",get_current_time(),table->philo[id].id);
 
     printf("\n");
 
 }
 
-void rotine(t_table *table) {
+void rotine(t_table *table) 
+{    
+    int id;
     int qtphilo = table->qtphilo;
-    while (1 && table->philo[table->num].xtime > 0) {
-        if(table->num == qtphilo)
-        {
-            table->num = 0;
-        }
-        // if((table->philo[table->num].id % 2) == 0 )
-        // {
-        //     ft_usleep(10);
-        // }
-        take_fork(table);
-        eat(table);
-        sleep_philo(table);
-        thinking(table);
-            table->num++;
+    pthread_mutex_lock(&table->num_lock);
+    if(id == table->qtphilo)
+        id = 0;
+    else
+        id = table->num++;
+    pthread_mutex_unlock(&table->num_lock);
+    while (1 && table->philo[id].xtime  > 0) 
+    {
+        take_fork(table,id);
+        eat(table,id);
+        sleep_philo(table,id);
+        thinking(table,id);
     }
 }
 
@@ -107,7 +109,10 @@ void philo_init(int ac, char **av)
         table->philo[i].qtphilo = qtphilo;
     }
 
-    pthread_mutex_init(&table->sal, NULL);
+    pthread_mutex_init(&table->dead_lock, NULL);
+    pthread_mutex_init(&table->dead_eat, NULL);
+    pthread_mutex_init(&table->dead_sleep, NULL);
+    pthread_mutex_init(&table->num_lock, NULL);
 
     ptr = table->philo;
     // for(i = 0; i < qtphilo; i++)
@@ -133,7 +138,10 @@ void philo_init(int ac, char **av)
          pthread_mutex_destroy(&ptr[i].my_mutex);
     }
 
-    pthread_mutex_destroy(&table->sal);
+    pthread_mutex_destroy(&table->num_lock);
+    pthread_mutex_destroy(&table->dead_lock);
+    pthread_mutex_destroy(&table->dead_eat);
+    pthread_mutex_destroy(&table->dead_sleep);
 
     // Liberação de memória
     free(mutexes);
