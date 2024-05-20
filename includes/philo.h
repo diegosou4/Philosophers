@@ -31,7 +31,6 @@ typedef struct s_philo
     pthread_t thread;
     pthread_mutex_t my_mutex;
     int id;
-    int qtphilo;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
@@ -49,16 +48,30 @@ typedef struct s_table
     pthread_mutex_t dead_eat;
     pthread_mutex_t dead_sleep;
     pthread_mutex_t num_lock;
+    pthread_mutex_t thinking;
     int num;
     t_philo *philo;
 } t_table;
 
+enum mutexflags{
+    INIT,
+    DESTROY,
+    LOCK,
+    UNLOCK,
+};
 
+enum philoflags{
+    START,
+    WAIT,
+};
 
 int	ft_isdigit(char *str);
 int parse_philo(int ac,char **av);
-int	ft_atoi(const char *str);
+size_t	ft_atoi(const char *str);
 void give_philo(int ac,char **av,t_philo *philo);
+void del_mutex_philo(t_philo *philo, int qtphilo);
+void mutex_table_operation(t_table *table,int flag);
+void mutex_operation(pthread_mutex_t *mutex, int flag);
 void philo_init(int ac,char **av);
 void print_struct(t_philo *philo);
 int ft_usleep(size_t milliseconds);
@@ -68,4 +81,9 @@ int ft_usleep(size_t milliseconds);
 
 size_t	get_current_time(void);
 size_t time_diff(size_t time);
+
+// Rotine 
+void start_philo(t_table *table, int ac, char **av);
+void philo_operation(t_table *table, int flag);
+void rotine(t_table *table);
 #endif

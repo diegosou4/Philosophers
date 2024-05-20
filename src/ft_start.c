@@ -56,7 +56,9 @@ void thinking(t_table *table, int id)
 {
     size_t time;
     time = get_current_time();
+    pthread_mutex_lock(&table->thinking);
     printf("%zu %d is thinking\n",time_diff(table->start_time),table->philo[id].id);
+    pthread_mutex_unlock(&table->thinking);
 }
 
 void rotine(t_table *table) 
@@ -69,10 +71,9 @@ void rotine(t_table *table)
     else if(id != table->qtphilo && id != -1)
         id = table->num++;
     pthread_mutex_unlock(&table->num_lock);
-
+    table->start_time = get_current_time();
     while (1 && table->philo[id].xtime  > 0 || table->philo[id].xtime == -1) 
     {
-        table->start_time = get_current_time();
         take_fork(table,id);
         eat(table,id);
         sleep_philo(table,id);
@@ -85,8 +86,7 @@ void philo_init(int ac, char **av)
     int i;
     t_table *table;
     t_philo *ptr;
-    int qtphilo;
-      
+    int qtphilo;  
     qtphilo = ft_atoi(av[1]);
     if (qtphilo <= 0)
     {
@@ -94,53 +94,18 @@ void philo_init(int ac, char **av)
         exit(0);
     }
     table = malloc(sizeof(t_table));
-    table->philo = malloc(sizeof(t_philo) * qtphilo);
-    table->qtphilo = qtphilo; // Adicione esta linha para armazenar o número total de filósofos
-    // Inicialização dos filósofos
-    for (i = 0; i < qtphilo; i++)
-    {
-        give_philo(ac, av, &table->philo[i]);
-        table->philo[i].qtphilo = qtphilo;
-    }
-
-    pthread_mutex_init(&table->dead_lock, NULL);
-    pthread_mutex_init(&table->dead_eat, NULL);
-    pthread_mutex_init(&table->dead_sleep, NULL);
-    pthread_mutex_init(&table->num_lock, NULL);
-
+    table->qtphilo = qtphilo;
+    start_philo(table,ac,av);
+    mutex_table_operation(table,INIT);
+    philo_operation(table,START);
+    philo_operation(table,WAIT);
     ptr = table->philo;
-    // for(i = 0; i < qtphilo; i++)
-    // {
-    //     printf("philo id aqui %i\n", ptr[i].id);
-    // }
     table->num = 0;
     // Criação das threads
-    for (i = 0; i < qtphilo; i++)
-    {
-        pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, (void *)table);
-        
-    }
 
-    // Espera pelas threads
-    for (i = 0; i < qtphilo; i++)
-    {
-        pthread_join(ptr[i].thread, NULL);
-        table->num++;
-    }
-    for(i = 0; i < qtphilo; i++)
-    {
-         pthread_mutex_destroy(&ptr[i].my_mutex);
-    }
 
-    pthread_mutex_destroy(&table->num_lock);
-    pthread_mutex_destroy(&table->dead_lock);
-    pthread_mutex_destroy(&table->dead_eat);
-    pthread_mutex_destroy(&table->dead_sleep);
-
-    // Liberação de memória
-    free(mutexes);
-    free(table->philo);
-    free(table);
+    del_mutex_philo(table->philo,qtphilo);
+    mutex_table_operation(table,DESTROY);
 }
 
 
