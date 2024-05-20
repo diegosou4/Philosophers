@@ -81,6 +81,8 @@ void rotine(t_table *table)
     }
 }
 
+
+
 void philo_init(int ac, char **av)
 {
     int i;
@@ -99,11 +101,6 @@ void philo_init(int ac, char **av)
     mutex_table_operation(table,INIT);
     philo_operation(table,START);
     philo_operation(table,WAIT);
-    ptr = table->philo;
-    table->num = 0;
-    // Criação das threads
-
-
     del_mutex_philo(table->philo,qtphilo);
     mutex_table_operation(table,DESTROY);
 }

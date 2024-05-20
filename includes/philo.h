@@ -21,11 +21,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-typedef struct g_mutex
-{
-    pthread_mutex_t mutex;
-}   t_mutex;
-
 typedef struct s_philo
 {
     pthread_t thread;
@@ -49,7 +44,6 @@ typedef struct s_table
     pthread_mutex_t dead_sleep;
     pthread_mutex_t num_lock;
     pthread_mutex_t thinking;
-    int num;
     t_philo *philo;
 } t_table;
 
