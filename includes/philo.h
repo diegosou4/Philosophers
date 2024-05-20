@@ -21,6 +21,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+
 typedef struct s_philo
 {
     pthread_t thread;
@@ -38,6 +39,7 @@ typedef struct s_table
 {
     int				dead_flag;
     int         qtphilo;
+    int num;
     size_t start_time;
     pthread_mutex_t dead_lock;
     pthread_mutex_t dead_eat;

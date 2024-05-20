@@ -38,7 +38,8 @@ void eat(t_table *table, int id)
     pthread_mutex_lock(&table->dead_eat);
     printf("%zu %d is eating\n",time_diff(table->start_time),table->philo[id].id);
     ft_usleep(table->philo[id].time_eat);
-    table->philo[id].xtime--;
+    if(table->philo[id].xtime != -1)
+        table->philo[id].xtime--;
     pthread_mutex_unlock(&table->dead_eat);
     pthread_mutex_unlock(table->philo[id].l_fork);
     pthread_mutex_unlock(table->philo[id].r_fork);
@@ -81,8 +82,6 @@ void rotine(t_table *table)
     }
 }
 
-
-
 void philo_init(int ac, char **av)
 {
     int i;
@@ -97,6 +96,7 @@ void philo_init(int ac, char **av)
     }
     table = malloc(sizeof(t_table));
     table->qtphilo = qtphilo;
+    table->num = 0;
     start_philo(table,ac,av);
     mutex_table_operation(table,INIT);
     philo_operation(table,START);
@@ -104,19 +104,3 @@ void philo_init(int ac, char **av)
     del_mutex_philo(table->philo,qtphilo);
     mutex_table_operation(table,DESTROY);
 }
-
-
-
-
-
-
-// void print_struct(t_philo *philo)
-// {
-//     printf("%i id philo\n",philo->id);
-//     printf("time_eat %i \n", (int)philo->time_eat);
-//     printf("time_dead %i \n", (int)philo->time_dead);
-//     printf("time_sleep %i \n", (int)philo->time_sleep);
-//     printf("r_fork %i \n",philo->r_fork);
-//     // printf("l_fork %i \n",philo->l_fork);
-//     printf("x time %i \n",philo->xtime);
-// }
