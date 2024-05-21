@@ -21,13 +21,13 @@ void give_philo(int ac,char **av, t_philo *philo)
     if(!philo)
         return;
     philo->id = i;
-   
     i++;
+    philo->status = LIVE;
     philo->time_dead = ft_atoi(av[2]);
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
+    philo->last_eat = 0;
     mutex_operation(&philo->my_mutex, INIT);
-    // philo->r_fork = 1;
     if(ac == 6)
         philo->xtime = ft_atoi(av[5]);
     else

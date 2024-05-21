@@ -13,53 +13,56 @@
 
 #include "../includes/philo.h"
 
-pthread_mutex_t *mutexes;
 
-pthread_mutex_t *my_mutex(void)
-{
-    static pthread_mutex_t mutex;
-    return(&mutex);
-}
 void take_fork(t_table *table , int id)
 {
     table->philo[id].r_fork = &table->philo[id].my_mutex;
     table->philo[id].l_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; 
     if(table->philo[id].id % 2 == 0)
     {
+        ft_usleep(1);
         table->philo[id].l_fork = &table->philo[id].my_mutex;
         table->philo[id].r_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; // Evita acesso fora do limite
     }
     pthread_mutex_lock(table->philo[id].l_fork);
     pthread_mutex_lock(table->philo[id].r_fork);
     printf("%zu %d has taken a fork\n",time_diff(table->start_time),table->philo[id].id);
+    printf("%zu %d has taken a fork\n",time_diff(table->start_time),table->philo[id].id);
 }
 void eat(t_table *table, int id)
 {
-    pthread_mutex_lock(&table->dead_eat);
-    printf("%zu %d is eating\n",time_diff(table->start_time),table->philo[id].id);
+    size_t last;
+
+    // pthread_mutex_lock(&table->dead_eat);
+    last = time_diff(table->start_time);
+    // size_t op =  last - table->philo[id].last_eat;
+    // printf("%zu %d last time eat \n\n", op, table->philo[id].id);
+    // // if(op > table->philo[id].time_dead)
+    // {
+    //     printf(" Ai fudeu negao \n");
+    //     exit(0);
+    // }
+    printf("%zu %d is eating\n",last ,table->philo[id].id);
+    table->philo[id].last_eat = last; 
     ft_usleep(table->philo[id].time_eat);
     if(table->philo[id].xtime != -1)
         table->philo[id].xtime--;
-    pthread_mutex_unlock(&table->dead_eat);
+    // pthread_mutex_unlock(&table->dead_eat);
     pthread_mutex_unlock(table->philo[id].l_fork);
     pthread_mutex_unlock(table->philo[id].r_fork);
 }
 
 void sleep_philo(t_table *table, int id)
 {
-    pthread_mutex_lock(&table->dead_sleep);
     printf("%zu %d is sleeping\n",time_diff(table->start_time),table->philo[id].id);
     ft_usleep(table->philo[id].time_sleep);
-    pthread_mutex_unlock(&table->dead_sleep);
 }
 
 void thinking(t_table *table, int id)
 {
     size_t time;
     time = get_current_time();
-    pthread_mutex_lock(&table->thinking);
     printf("%zu %d is thinking\n",time_diff(table->start_time),table->philo[id].id);
-    pthread_mutex_unlock(&table->thinking);
 }
 
 void rotine(t_table *table) 

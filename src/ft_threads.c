@@ -33,7 +33,11 @@ void philo_operation(t_table *table, int flag)
     if(flag == START)
     {
         while(++i < table->qtphilo)
+        {
             pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, (void *)table);
+        }
+        ft_usleep(50);
+            
     }
     else if(flag == WAIT)
     {

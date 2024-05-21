@@ -21,18 +21,20 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-
 typedef struct s_philo
 {
+    int id;
+    int status;
     pthread_t thread;
     pthread_mutex_t my_mutex;
-    int id;
+    int xtime;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
+    size_t last_eat;
     pthread_mutex_t *r_fork;
     pthread_mutex_t *l_fork;
-    int xtime;
+  
 }       t_philo;
 
 typedef struct s_table
@@ -59,6 +61,8 @@ enum mutexflags{
 enum philoflags{
     START,
     WAIT,
+    LIVE,
+    DEAD
 };
 
 int	ft_isdigit(char *str);
