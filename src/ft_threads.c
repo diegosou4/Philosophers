@@ -49,12 +49,22 @@ void philo_operation(t_table *table, int flag)
 bool thread_finish(t_philo *philo)
 {
     bool res;
+    int i;
+ 
+    t_table *ptr;
     mutex_operation(&philo->table->num_lock,LOCK);
-    
-    if((philo->id +1 ) == philo->table->qtphilo)
-        res = true;
-    else
-        res = false;
+    ptr = philo->table;
+    i = 0;
+    while(i < philo->table->qtphilo)
+    {
+        if(ptr->philo[i].xtime != 0)
+        {
+            mutex_operation(&philo->table->num_lock,UNLOCK);
+            return(false);
+        }
+        i++;
+    }
+    res = true;
     mutex_operation(&philo->table->num_lock,UNLOCK);
     return(res);
 }
