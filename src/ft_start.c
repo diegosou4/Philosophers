@@ -66,13 +66,6 @@ void take_fork(t_philo *philo)
 
 void eat(t_philo *philo)
 {
-   
-    set_long(&philo->table->num_lock,&philo->last_eat,time_diff(philo->table->start_time));
-    mutex_operation(&philo->table->num_lock,LOCK);
-    philo->xtime--;
-    mutex_operation(&philo->table->num_lock,UNLOCK);
-    print_status(philo,EAT);
-    ft_usleep(philo->time_eat);
     if(philo->xtime == 0)
     {
         mutex_operation(&philo->table->num_lock,LOCK);
@@ -81,6 +74,12 @@ void eat(t_philo *philo)
         philo->table->id_dead = philo->id;
         mutex_operation(&philo->table->num_lock,UNLOCK);
     } 
+    set_long(&philo->table->num_lock,&philo->last_eat,time_diff(philo->table->start_time));
+    mutex_operation(&philo->table->num_lock,LOCK);
+    philo->xtime--;
+    mutex_operation(&philo->table->num_lock,UNLOCK);
+    print_status(philo,EAT);
+    ft_usleep(philo->time_eat);
     mutex_operation(philo->l_fork, UNLOCK);
     mutex_operation(philo->r_fork, UNLOCK);
 }

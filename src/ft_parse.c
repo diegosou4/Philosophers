@@ -34,10 +34,7 @@ void give_philo(int ac,char **av, t_philo *philo,t_table *table)
     philo->table = table;
     if(ac == 6)
     {
-        x = ft_atoi(av[5]);
-        if(ft_atoi > 0)
-            x++;
-         philo->xtime = x;
+         philo->xtime = ft_atoi(av[5]);
     }
        
     else
