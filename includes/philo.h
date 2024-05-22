@@ -20,6 +20,9 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdbool.h>
+
+typedef struct s_table t_table;
 
 typedef struct s_philo
 {
@@ -34,20 +37,22 @@ typedef struct s_philo
     size_t last_eat;
     pthread_mutex_t *r_fork;
     pthread_mutex_t *l_fork;
+    t_table *table;
   
 }       t_philo;
 
 typedef struct s_table
 {
     int				dead_flag;
+    bool    is_dead;
+    int id_dead;
     int         qtphilo;
     int num;
     size_t start_time;
+    pthread_t monitor;
     pthread_mutex_t dead_lock;
-    pthread_mutex_t dead_eat;
-    pthread_mutex_t dead_sleep;
+    pthread_mutex_t printf_lock;
     pthread_mutex_t num_lock;
-    pthread_mutex_t thinking;
     t_philo *philo;
 } t_table;
 
@@ -62,13 +67,18 @@ enum philoflags{
     START,
     WAIT,
     LIVE,
-    DEAD
+    DEAD,
+    TAKE,
+    EAT,
+    SLEEP,
 };
+
+
 
 int	ft_isdigit(char *str);
 int parse_philo(int ac,char **av);
 size_t	ft_atoi(const char *str);
-void give_philo(int ac,char **av,t_philo *philo);
+void give_philo(int ac,char **av, t_philo *philo,t_table *table);
 void del_mutex_philo(t_philo *philo, int qtphilo);
 void mutex_table_operation(t_table *table,int flag);
 void mutex_operation(pthread_mutex_t *mutex, int flag);
@@ -77,13 +87,13 @@ void print_struct(t_philo *philo);
 int ft_usleep(size_t milliseconds);
 
 // Time
-
+void print_status(t_philo *philo, int status);
 
 size_t	get_current_time(void);
 size_t time_diff(size_t time);
-
+void start_monitor(t_table *table, int flag);
 // Rotine 
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table, int flag);
-void rotine(t_table *table);
+void rotine(t_philo *philo);
 #endif
