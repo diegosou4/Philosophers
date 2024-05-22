@@ -13,76 +13,78 @@
 
 #include "../includes/philo.h"
 
-
-void take_fork(t_table *table , int id)
+void print_status(t_philo *philo, int status)
 {
-    table->philo[id].r_fork = &table->philo[id].my_mutex;
-    table->philo[id].l_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; 
-    if(table->philo[id].id % 2 == 0)
+    mutex_operation(&philo->table->printf_lock, LOCK);
+    if(status == TAKE )
+        printf("%zu %d has taken a fork\n",time_diff(philo->table->start_time),philo->id);
+    else if(status == EAT)
+        printf("%zu %d is eating\n",time_diff(philo->table->start_time),philo->id);
+    else if(status == SLEEP)
+        printf("%zu %d is sleeping\n",time_diff(philo->table->start_time),philo->id);
+    else if(status == DEAD)
+        printf("%zu %d is dead\n",time_diff(philo->table->start_time),philo->id);
+    mutex_operation(&philo->table->printf_lock, UNLOCK);
+}
+
+void take_fork(t_philo *philo)
+{
+    int mat;
+    mat = 0;
+
+    mat = (philo->id + 1) % philo->table->qtphilo;
+    if((philo->id % 2) == 0)
     {
-        ft_usleep(1);
-        table->philo[id].l_fork = &table->philo[id].my_mutex;
-        table->philo[id].r_fork = &table->philo[(id + 1) % table->qtphilo].my_mutex; // Evita acesso fora do limite
+        philo->r_fork = &philo->my_mutex;
+        philo->l_fork = &philo->table->philo[mat].my_mutex;
+    }else{
+        philo->l_fork = &philo->my_mutex;
+        philo->r_fork = &philo->table->philo[mat].my_mutex;
     }
-    pthread_mutex_lock(table->philo[id].l_fork);
-    pthread_mutex_lock(table->philo[id].r_fork);
-    printf("%zu %d has taken a fork\n",time_diff(table->start_time),table->philo[id].id);
-    printf("%zu %d has taken a fork\n",time_diff(table->start_time),table->philo[id].id);
+    mutex_operation(philo->l_fork, LOCK);
+    mutex_operation(philo->r_fork, LOCK);
+    print_status(philo,TAKE);
+    print_status(philo,TAKE);
 }
-void eat(t_table *table, int id)
+
+void eat(t_philo *philo)
 {
-    size_t last;
-
-    // pthread_mutex_lock(&table->dead_eat);
-    last = time_diff(table->start_time);
-    // size_t op =  last - table->philo[id].last_eat;
-    // printf("%zu %d last time eat \n\n", op, table->philo[id].id);
-    // // if(op > table->philo[id].time_dead)
-    // {
-    //     printf(" Ai fudeu negao \n");
-    //     exit(0);
-    // }
-    printf("%zu %d is eating\n",last ,table->philo[id].id);
-    table->philo[id].last_eat = last; 
-    ft_usleep(table->philo[id].time_eat);
-    if(table->philo[id].xtime != -1)
-        table->philo[id].xtime--;
-    // pthread_mutex_unlock(&table->dead_eat);
-    pthread_mutex_unlock(table->philo[id].l_fork);
-    pthread_mutex_unlock(table->philo[id].r_fork);
+    if(philo->xtime == 0)
+    {
+        philo->table->is_dead = true;
+        philo->table->id_dead = philo->id;
+    }else
+    {
+        philo->xtime--;
+        print_status(philo,EAT);
+        ft_usleep(philo->time_eat);
+    }
+    mutex_operation(philo->l_fork, UNLOCK);
+    mutex_operation(philo->r_fork, UNLOCK);
 }
-
-void sleep_philo(t_table *table, int id)
+void sleep_philo(t_philo *philo)
 {
-    printf("%zu %d is sleeping\n",time_diff(table->start_time),table->philo[id].id);
-    ft_usleep(table->philo[id].time_sleep);
+    print_status(philo,SLEEP);
+    ft_usleep(philo->time_sleep);
 }
-
-void thinking(t_table *table, int id)
+void thinking(t_philo *philo)
 {
-    size_t time;
-    time = get_current_time();
-    printf("%zu %d is thinking\n",time_diff(table->start_time),table->philo[id].id);
+    printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 
-void rotine(t_table *table) 
+void rotine(t_philo *philo) 
 {    
-    int id;
-    int qtphilo = table->qtphilo;
-    pthread_mutex_lock(&table->num_lock);
-    if(id == table->qtphilo)
-        id = 0;
-    else if(id != table->qtphilo && id != -1)
-        id = table->num++;
-    pthread_mutex_unlock(&table->num_lock);
-    table->start_time = get_current_time();
-    while (1 && table->philo[id].xtime  > 0 || table->philo[id].xtime == -1) 
+
+    philo->table->start_time = get_current_time();
+    start_monitor(philo->table,INIT);
+    while (1) 
     {
-        take_fork(table,id);
-        eat(table,id);
-        sleep_philo(table,id);
-        thinking(table,id);
+        take_fork(philo);
+        eat(philo);
+        sleep_philo(philo);
+        thinking(philo);
     }
+    start_monitor(philo->table, WAIT);
 }
 
 void philo_init(int ac, char **av)
@@ -100,8 +102,9 @@ void philo_init(int ac, char **av)
     table = malloc(sizeof(t_table));
     table->qtphilo = qtphilo;
     table->num = 0;
-    start_philo(table,ac,av);
     mutex_table_operation(table,INIT);
+    start_philo(table,ac,av);
+    
     philo_operation(table,START);
     philo_operation(table,WAIT);
     del_mutex_philo(table->philo,qtphilo);

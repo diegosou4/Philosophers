@@ -20,7 +20,7 @@ void start_philo(t_table *table, int ac, char **av)
     i = -1;
     table->philo = malloc(sizeof(t_philo) * table->qtphilo);
     while(++i < table->qtphilo)
-         give_philo(ac, av, &table->philo[i]);
+         give_philo(ac, av, &table->philo[i],table);
 }
 
 void philo_operation(t_table *table, int flag)
@@ -34,7 +34,7 @@ void philo_operation(t_table *table, int flag)
     {
         while(++i < table->qtphilo)
         {
-            pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, (void *)table);
+            pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
         }
         ft_usleep(50);
             
