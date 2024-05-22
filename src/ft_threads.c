@@ -45,3 +45,16 @@ void philo_operation(t_table *table, int flag)
               pthread_join(ptr[i].thread, NULL);
     }
 }
+
+bool thread_finish(t_philo *philo)
+{
+    bool res;
+    mutex_operation(&philo->table->num_lock,LOCK);
+    
+    if((philo->id +1 ) == philo->table->qtphilo)
+        res = true;
+    else
+        res = false;
+    mutex_operation(&philo->table->num_lock,UNLOCK);
+    return(res);
+}

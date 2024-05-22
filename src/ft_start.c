@@ -66,7 +66,7 @@ void take_fork(t_philo *philo)
 
 void eat(t_philo *philo)
 {
-    if(philo->xtime == 0)
+    if(philo->xtime == 0 && thread_finish(philo) == true)
     {
         mutex_operation(&philo->table->num_lock,LOCK);
         philo->is_full = true;

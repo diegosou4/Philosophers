@@ -98,7 +98,7 @@ void start_monitor(t_table *table, int flag);
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table, int flag);
 void rotine(t_philo *philo);
-
+bool thread_finish(t_philo *philo);
 // Getter and Setters
 
 bool get_bool(pthread_mutex_t *mutex,bool *is_dead);
