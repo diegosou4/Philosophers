@@ -30,6 +30,7 @@ typedef struct s_philo
     int status;
     pthread_t thread;
     pthread_mutex_t my_mutex;
+    bool is_full;
     int xtime;
     size_t time_eat;
     size_t time_dead;
@@ -45,6 +46,7 @@ typedef struct s_table
 {
     int				dead_flag;
     bool    is_dead;
+
     int id_dead;
     int         qtphilo;
     int num;
@@ -96,4 +98,11 @@ void start_monitor(t_table *table, int flag);
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table, int flag);
 void rotine(t_philo *philo);
+
+// Getter and Setters
+
+bool get_bool(pthread_mutex_t *mutex,bool *is_dead);
+void set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
+long get_long(pthread_mutex_t *mutex, size_t *value);
+void set_long(pthread_mutex_t *mutex,size_t *dest, long value);
 #endif
