@@ -17,7 +17,7 @@
 void give_philo(int ac,char **av, t_philo *philo,t_table *table)
 {
     static unsigned int i;
-    
+    int x;
     if(!philo)
         return;
     mutex_operation(&table->num_lock,LOCK);
@@ -29,10 +29,17 @@ void give_philo(int ac,char **av, t_philo *philo,t_table *table)
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
     philo->last_eat = 0;
+    philo->is_full = false;
     mutex_operation(&philo->my_mutex, INIT);
     philo->table = table;
     if(ac == 6)
-        philo->xtime = ft_atoi(av[5]);
+    {
+        x = ft_atoi(av[5]);
+        if(ft_atoi > 0)
+            x++;
+         philo->xtime = x;
+    }
+       
     else
         philo->xtime = -1;
 }

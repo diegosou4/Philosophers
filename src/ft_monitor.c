@@ -14,33 +14,25 @@
 
 
 
-void monitor(t_table *table)
-{
+void monitor(t_table *table) {
     t_philo *ptr;
-
-    ptr = &table->philo[table->id_dead];
-    int i;
-    i = 0;
-   while(table->is_dead != true)
-        ;
-    if(table->is_dead == true)
-    {
-        print_status(ptr,DEAD);
-        exit(0);
+    while (1) {
+        mutex_operation(&table->dead_lock, LOCK);
+        if (table->is_dead) {
+            ptr = &table->philo[table->id_dead];
+            // ft_usleep(ptr->time_dead);
+            print_status(ptr, DEAD);
+            mutex_operation(&table->dead_lock, UNLOCK);
+            exit(0);
+        }
+        mutex_operation(&table->dead_lock, UNLOCK);
     }
 }
 
-void start_monitor(t_table *table, int flag)
-{
-    int i;
-    i = -1; 
-
-    if(flag == START)
-    {
-        pthread_create(&table->monitor,NULL, (void *(*)(void *))monitor, (void *)table);
+void start_monitor(t_table *table, int flag) {
+    if (flag == START) {
+        pthread_create(&table->monitor, NULL, (void *(*)(void *))monitor, (void *)table);
+    } else if (flag == WAIT) {
+        pthread_join(table->monitor, NULL);
     }
-    else if(flag == WAIT)
-    {
-        pthread_join(table->monitor,NULL);
-    }
-}   
+}
