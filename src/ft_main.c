@@ -20,12 +20,11 @@ bool last_eat(t_philo *philo)
     long last;
 
     last = get_long(&philo->table->dead_lock, &philo->time_dead);
-    timenow = time_diff(philo->table->start_time) - get_long(&philo->table->dead_lock, &philo->last_eat);    
-    if (timenow > last + 10) 
+    timenow = time_diff(philo->table->start_time) - get_long(&philo->table->dead_lock, &philo->last_eat);   
+    if (timenow > last) 
     {
-        printf("%zu \n", timenow);
+        printf("%zu time \n", timenow);
         printf("died because the time\n");
-        exit(0);
         return true;
     }
     return(false);
@@ -39,14 +38,27 @@ bool is_died(t_table *table)
     i = 0;
     died = true;
     while(i < table->qtphilo)
+    {
+        if(last_eat(&table->philo[i]) == true)
+        {
+            died = false;
+            mutex_operation(&table->dead_lock,LOCK);
+            exit(0);
+            mutex_operation(&table->dead_lock,UNLOCK);
+        }
+        i++;
+    }
+    i = 0;
+    while(i < table->qtphilo)
     {   
-        if(table->philo[i].xtime != 0 || last_eat(&table->philo[i]) != false)
+        if(table->philo[i].xtime != 0 )
         {
             died = false;
             break;
         }
         i++;
     }
+
     mutex_operation(&table->num_lock, UNLOCK);
     return(died);
 }
@@ -62,7 +74,7 @@ void main_rotine(t_table *table)
     if(is_died(table) == true)
     {
         mutex_operation(&table->printf_lock,LOCK);
-        printf("%zu %d died x time\n",time_diff(table->start_time),table->is_dead);
+        printf("%zu %d End program all philo eat x time\n",time_diff(table->start_time),table->is_dead);
         mutex_operation(&table->printf_lock,UNLOCK);
         exit(0);
     }

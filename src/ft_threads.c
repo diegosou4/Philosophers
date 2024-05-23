@@ -31,14 +31,13 @@ void start_philo(t_table *table, int ac, char **av)
         int i;
         i = -1; 
         t_philo *ptr;
-
         ptr = table->philo;
         if(flag == START)
         {
             while(++i < table->qtphilo)
             { 
                 pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
-                 
+      
             }
             ft_usleep(50);
      

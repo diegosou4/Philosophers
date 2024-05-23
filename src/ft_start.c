@@ -89,7 +89,7 @@ void thinking(t_philo *philo)
 void rotine(t_philo *philo) 
 {    
     philo->table->start_time = get_current_time();
-    while (!philo->table->is_dead) 
+    while (philo->table->is_dead != true) 
     {
         take_fork(philo);
         eat(philo);
