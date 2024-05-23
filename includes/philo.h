@@ -46,12 +46,11 @@ typedef struct s_table
 {
     int				dead_flag;
     bool    is_dead;
-
     int id_dead;
     int         qtphilo;
     int num;
     size_t start_time;
-    pthread_t monitor;
+    pthread_t main;
     pthread_mutex_t dead_lock;
     pthread_mutex_t printf_lock;
     pthread_mutex_t num_lock;
@@ -85,7 +84,6 @@ void del_mutex_philo(t_philo *philo, int qtphilo);
 void mutex_table_operation(t_table *table,int flag);
 void mutex_operation(pthread_mutex_t *mutex, int flag);
 void philo_init(int ac,char **av);
-void print_struct(t_philo *philo);
 int ft_usleep(size_t milliseconds);
 
 // Time
@@ -93,7 +91,7 @@ void print_status(t_philo *philo, int status);
 
 size_t	get_current_time(void);
 size_t time_diff(size_t time);
-void start_monitor(t_table *table, int flag);
+
 // Rotine 
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table, int flag);
@@ -105,4 +103,9 @@ bool get_bool(pthread_mutex_t *mutex,bool *is_dead);
 void set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
 long get_long(pthread_mutex_t *mutex, size_t *value);
 void set_long(pthread_mutex_t *mutex,size_t *dest, long value);
+
+
+// Main Operation
+void main_operation(t_table *table, int flag);
+bool is_died(t_table *table);
 #endif
