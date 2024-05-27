@@ -46,11 +46,14 @@ typedef struct s_table
 {
     int				dead_flag;
     bool    is_dead;
+    bool    end;
+    bool sync;
     int id_dead;
     int         qtphilo;
     int num;
     size_t start_time;
     pthread_t main;
+    pthread_mutex_t check;
     pthread_mutex_t dead_lock;
     pthread_mutex_t printf_lock;
     pthread_mutex_t num_lock;
@@ -104,6 +107,8 @@ void set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
 long get_long(pthread_mutex_t *mutex, size_t *value);
 void set_long(pthread_mutex_t *mutex,size_t *dest, long value);
 
+void thread_syncrinize(t_table *table);
+bool end_simulation(t_table *table);
 
 // Main Operation
 void main_operation(t_table *table, int flag);

@@ -24,30 +24,26 @@ void start_philo(t_table *table, int ac, char **av)
 }
 
 
-
-
-    void philo_operation(t_table *table, int flag)
+void philo_operation(t_table *table, int flag)
+{
+    int i;
+    i = -1; 
+    t_philo *ptr;
+    ptr = table->philo;
+    if(flag == START)
     {
-        int i;
-        i = -1; 
-        t_philo *ptr;
-        ptr = table->philo;
-        if(flag == START)
-        {
-            while(++i < table->qtphilo)
-            { 
-                pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
-      
-            }
-            ft_usleep(50);
-     
+        while(++i < table->qtphilo)
+        { 
+            pthread_create(&ptr[i].thread, NULL, (void *(*)(void *))rotine, &ptr[i]);
+        }
+           set_bool(&table->num_lock,&table->sync,true);
         }
         else if(flag == WAIT)
         {
             while(++i < table->qtphilo)
                 pthread_join(ptr[i].thread, NULL);
         }
-    }
+}
 
 bool thread_finish(t_philo *philo)
 {

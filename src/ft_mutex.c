@@ -19,7 +19,7 @@ void mutex_table_operation(t_table *table,int flag)
     mutex_operation(&table->dead_lock, flag);
     mutex_operation(&table->printf_lock,flag);
     mutex_operation(&table->num_lock, flag);
-    
+    mutex_operation(&table->check,flag);
 
 }
 

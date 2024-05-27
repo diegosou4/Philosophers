@@ -13,31 +13,14 @@
 
 #include "../includes/philo.h"
 
-// static bool philo_died(t_philo *philo)
-// {
-//     long elapsed;
-//     long time_td;
-
-//     if(get_bool(&philo->table->dead_lock,&philo->is_full) == true)  
-//         return(true);
-//     return(false);
-//     // elapsed = get_current_time() - get_long(&philo->table->num_lock,&philo->last_eat);
-//     // time_td = philo->time_dead;
-//     // if(elapsed > time_td)
-//     //     return(true);
-//     // else
-//     //     return(false);
-
-// }
-
 void print_status(t_philo *philo, int status)
 {
     mutex_operation(&philo->table->printf_lock, LOCK);
-    if(status == TAKE && philo->table->is_dead != true)
+    if(status == TAKE && end_simulation(philo->table) != true) 
         printf("%zu %d has taken a fork\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == EAT && philo->table->is_dead != true)
+    else if(status == EAT && end_simulation(philo->table) != true)
         printf("%zu %d is eating\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == SLEEP && philo->table->is_dead != true)
+    else if(status == SLEEP && end_simulation(philo->table) != true)
         printf("%zu %d is sleeping\n",time_diff(philo->table->start_time),philo->id);
     else if(status == DEAD )
         printf("%zu %d died\n",time_diff(philo->table->start_time),philo->id);
@@ -86,17 +69,20 @@ void thinking(t_philo *philo)
     printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 
+
 void rotine(t_philo *philo) 
 {    
     philo->table->start_time = get_current_time();
-    while (philo->table->is_dead != true) 
+    while (end_simulation(philo->table) != true) 
     {
+        if(philo->is_full)
+            return;
         take_fork(philo);
         eat(philo);
         sleep_philo(philo);
         thinking(philo);
     }
-
+    
 }
 
 void philo_init(int ac, char **av)
@@ -115,6 +101,7 @@ void philo_init(int ac, char **av)
     table->qtphilo = qtphilo;
     table->num = 0;
     table->is_dead = false;
+    table->end = false;
     mutex_table_operation(table,INIT);
     start_philo(table,ac,av);
     philo_operation(table,START);
