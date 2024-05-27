@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diegmore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:24:46 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/23 12:24:47 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/05/27 19:52:43 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void main_operation(t_table *table, int flag)
 {
     if(flag ==  START)
     {
-        pthread_create(&table->main, NULL, (void *(*)(void *))main_rotine, table);
+       
     }   
     else if(flag == WAIT)
         pthread_join(table->main,NULL);

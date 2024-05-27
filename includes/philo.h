@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:22:51 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/01 14:55:46 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/27 19:56:00 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_table
     bool    is_dead;
     bool    end;
     bool sync;
+    int xtime;
     int id_dead;
     int         qtphilo;
     int num;
@@ -97,7 +98,7 @@ size_t time_diff(size_t time);
 
 // Rotine 
 void start_philo(t_table *table, int ac, char **av);
-void philo_operation(t_table *table, int flag);
+void philo_operation(t_table *table);
 void rotine(t_philo *philo);
 bool thread_finish(t_philo *philo);
 // Getter and Setters
@@ -111,6 +112,9 @@ void thread_syncrinize(t_table *table);
 bool end_simulation(t_table *table);
 
 // Main Operation
+
+
+void main_rotine(t_table *table);
 void main_operation(t_table *table, int flag);
 bool is_died(t_table *table);
 #endif

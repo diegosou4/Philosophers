@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:23:44 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/16 22:43:27 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/05/27 19:58:59 by diemorei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 void print_status(t_philo *philo, int status)
 {
+    if(get_bool(&philo->table->dead_lock,&philo->is_full) == true)
+        return;
     mutex_operation(&philo->table->printf_lock, LOCK);
     if(status == TAKE && end_simulation(philo->table) == false) 
         printf("%zu %d has taken a fork\n",time_diff(philo->table->start_time),philo->id);
@@ -79,18 +81,19 @@ void sleep_philo(t_philo *philo)
 }
 void thinking(t_philo *philo)
 {
-        if(end_simulation(philo->table) == false)
-            printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
+        if(end_simulation(philo->table) == true 
+        || get_bool(&philo->table->dead_lock,&philo->is_full) == true)
+                return;
+        printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 
 
 void rotine(t_philo *philo) 
 { 
     thread_syncrinize(philo->table);
-    philo->table->start_time = get_current_time();
     while (end_simulation(philo->table) == false) 
     {
-        if(philo->is_full == true)
+        if(get_bool(&philo->table->dead_lock,&philo->is_full) == true)
             return;
             take_fork(philo);
             eat(philo);
@@ -120,10 +123,7 @@ void philo_init(int ac, char **av)
     table->sync = false;
     mutex_table_operation(table,INIT);
     start_philo(table,ac,av);
-    philo_operation(table,START);
-    main_operation(table,START);
-    philo_operation(table,WAIT);
-    main_operation(table,WAIT);
+    philo_operation(table);
     del_mutex_philo(table->philo,qtphilo);
     mutex_table_operation(table,DESTROY);
 }
