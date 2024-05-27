@@ -16,14 +16,14 @@
 void print_status(t_philo *philo, int status)
 {
     mutex_operation(&philo->table->printf_lock, LOCK);
-    if(status == TAKE && end_simulation(philo->table) != true) 
+    if(status == TAKE && end_simulation(philo->table) == false) 
         printf("%zu %d has taken a fork\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == EAT && end_simulation(philo->table) != true)
+    else if(status == EAT && end_simulation(philo->table) == false)
         printf("%zu %d is eating\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == SLEEP && end_simulation(philo->table) != true)
+    else if(status == SLEEP && end_simulation(philo->table) == false)
         printf("%zu %d is sleeping\n",time_diff(philo->table->start_time),philo->id);
     else if(status == DEAD )
-        printf("%zu %d died\n",time_diff(philo->table->start_time),philo->id);
+        printf("%zu %d died\n",philo->time_dead,philo->id);
     mutex_operation(&philo->table->printf_lock, UNLOCK);
 }
 
@@ -43,8 +43,19 @@ void take_fork(t_philo *philo)
     }
     mutex_operation(philo->l_fork, LOCK);
     print_status(philo,TAKE);
+    if(end_simulation(philo->table) == true)
+    {
+        mutex_operation(philo->l_fork, UNLOCK);
+        return;
+    }
     mutex_operation(philo->r_fork, LOCK);
     print_status(philo,TAKE);
+    if(end_simulation(philo->table) == true)
+    {
+        mutex_operation(philo->l_fork, UNLOCK);
+        return;
+    }
+      
 }
 
 void eat(t_philo *philo)
@@ -68,23 +79,23 @@ void sleep_philo(t_philo *philo)
 }
 void thinking(t_philo *philo)
 {
-    if(end_simulation(philo->table) != true)
-        printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
+        if(end_simulation(philo->table) == false)
+            printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 
 
 void rotine(t_philo *philo) 
-{    
-    philo->table->start_time = get_current_time();
+{ 
     thread_syncrinize(philo->table);
-    while (end_simulation(philo->table) != true) 
+    philo->table->start_time = get_current_time();
+    while (end_simulation(philo->table) == false) 
     {
-        if(philo->is_full)
+        if(philo->is_full == true)
             return;
-        take_fork(philo);
-        eat(philo);
-        sleep_philo(philo);
-        thinking(philo);
+            take_fork(philo);
+            eat(philo);
+            sleep_philo(philo);
+            thinking(philo);
     }
     
 }

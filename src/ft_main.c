@@ -21,10 +21,13 @@ bool last_eat(t_philo *philo, t_table *table)
 
     last = get_long(&philo->table->dead_lock, &philo->time_dead);
     timenow = time_diff(philo->table->start_time) - get_long(&philo->table->dead_lock, &philo->last_eat);   
+ //   mutex_operation(&table->num_lock,LOCK);
     if (timenow > last) 
     {
-        printf("%zu %d died\n",timenow,table->id_dead);
         set_bool(&table->dead_lock,&table->end,true);
+        philo->time_dead = timenow;
+        print_status(philo,DEAD);
+       // mutex_operation(&table->num_lock,UNLOCK);
         return (true);
     }
     return(false);
@@ -54,14 +57,15 @@ bool is_died(t_table *table)
     int i;
     i = -1;
     bool died;
-    died = true;
+
+    // if(get_bool(&table->dead_lock,&table->end) == true)
+    //     return(true);
     if(last_time(table) == true)
     {
-        set_bool(&table->dead_lock,&table->end,true);
         return(true);
     }
-        
     mutex_operation(&table->check,LOCK);
+    died = true;
     while(++i < table->qtphilo)
     {   
         if(table->philo[i].is_full != true)
