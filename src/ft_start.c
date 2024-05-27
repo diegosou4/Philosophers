@@ -52,6 +52,8 @@ void eat(t_philo *philo)
     set_long(&philo->table->num_lock,&philo->last_eat,time_diff(philo->table->start_time));
     mutex_operation(&philo->table->num_lock,LOCK);
     philo->xtime--;
+    if(philo->xtime == 0)
+        philo->is_full = true;
     philo->table->id_dead = philo->id;
     mutex_operation(&philo->table->num_lock,UNLOCK);
     print_status(philo,EAT);
@@ -66,13 +68,15 @@ void sleep_philo(t_philo *philo)
 }
 void thinking(t_philo *philo)
 {
-    printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
+    if(end_simulation(philo->table) != true)
+        printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 
 
 void rotine(t_philo *philo) 
 {    
     philo->table->start_time = get_current_time();
+    thread_syncrinize(philo->table);
     while (end_simulation(philo->table) != true) 
     {
         if(philo->is_full)
@@ -102,12 +106,13 @@ void philo_init(int ac, char **av)
     table->num = 0;
     table->is_dead = false;
     table->end = false;
+    table->sync = false;
     mutex_table_operation(table,INIT);
     start_philo(table,ac,av);
     philo_operation(table,START);
     main_operation(table,START);
     philo_operation(table,WAIT);
     main_operation(table,WAIT);
-    // del_mutex_philo(table->philo,qtphilo);
-    // mutex_table_operation(table,DESTROY);
+    del_mutex_philo(table->philo,qtphilo);
+    mutex_table_operation(table,DESTROY);
 }

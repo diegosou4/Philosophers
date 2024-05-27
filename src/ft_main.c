@@ -13,7 +13,7 @@
 
 #include "../includes/philo.h"
 
-bool last_eat(t_philo *philo) 
+bool last_eat(t_philo *philo, t_table *table) 
 {
     int i;
     long timenow;
@@ -23,43 +23,54 @@ bool last_eat(t_philo *philo)
     timenow = time_diff(philo->table->start_time) - get_long(&philo->table->dead_lock, &philo->last_eat);   
     if (timenow > last) 
     {
-        printf("%zu time \n", timenow);
-        printf("died because the time\n");
-        return true;
+        printf("%zu %d died\n",timenow,table->id_dead);
+        set_bool(&table->dead_lock,&table->end,true);
+        return (true);
     }
     return(false);
 }
 
-bool is_died(t_table *table)
+bool last_time(t_table *table)
 {
     bool died;
     int i;
-    mutex_operation(&table->num_lock, LOCK);
-    i = 0;
-    died = true;
-    while(i < table->qtphilo)
+    i = -1;
+    died = false;
+    mutex_operation(&table->check,LOCK);
+    while(++i < table->qtphilo)
     {
-        if(last_eat(&table->philo[i]) == true)
+        if(last_eat(&table->philo[i],table) == true)
         {
-            died = false;
-            mutex_operation(&table->dead_lock,LOCK);
-            exit(0);
-            mutex_operation(&table->dead_lock,UNLOCK);
-        }
-        i++;
+            died = true;
+            break;
+        }  
     }
-    i = 0;
-    while(i < table->qtphilo)
+    mutex_operation(&table->check,UNLOCK);
+    return(died);
+}
+
+bool is_died(t_table *table)
+{
+    int i;
+    i = -1;
+    bool died;
+    died = true;
+    if(last_time(table) == true)
+    {
+        set_bool(&table->dead_lock,&table->end,true);
+        return(true);
+    }
+        
+    mutex_operation(&table->check,LOCK);
+    while(++i < table->qtphilo)
     {   
-        if(table->philo[i].xtime != 0 )
+        if(table->philo[i].is_full != true)
         {
             died = false;
             break;
         }
-        i++;
     }
-
-    mutex_operation(&table->num_lock, UNLOCK);
+    mutex_operation(&table->check,UNLOCK);
     return(died);
 }
 
@@ -69,16 +80,9 @@ void main_rotine(t_table *table)
 
     int i;
     i = 0;
+    thread_syncrinize(table);
     while(is_died(table) != true)
         ;
-    if(is_died(table) == true)
-    {
-        mutex_operation(&table->printf_lock,LOCK);
-        printf("%zu %d End program all philo eat x time\n",time_diff(table->start_time),table->is_dead);
-        mutex_operation(&table->printf_lock,UNLOCK);
-        exit(0);
-    }
-
 }
 
 
@@ -87,8 +91,7 @@ void main_operation(t_table *table, int flag)
     if(flag ==  START)
     {
         pthread_create(&table->main, NULL, (void *(*)(void *))main_rotine, table);
-    }
-        
+    }   
     else if(flag == WAIT)
         pthread_join(table->main,NULL);
 }

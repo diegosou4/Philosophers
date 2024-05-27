@@ -21,5 +21,5 @@ void thread_syncrinize(t_table *table)
 }
 bool end_simulation(t_table *table)
 {
-    return(get_bool(&table->check,&table->is_dead));
+    return(get_bool(&table->check,&table->end));
 }

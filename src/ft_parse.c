@@ -28,7 +28,7 @@ void give_philo(int ac,char **av, t_philo *philo,t_table *table)
     philo->time_dead = ft_atoi(av[2]);
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
-    philo->last_eat = 0;
+    philo->last_eat = get_current_time();
     philo->is_full = false;
     mutex_operation(&philo->my_mutex, INIT);
     philo->table = table;
