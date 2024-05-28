@@ -26,6 +26,7 @@ void give_philo(int ac,char **av, t_philo *philo,t_table *table)
     mutex_operation(&table->num_lock, UNLOCK);
     philo->status = LIVE;
     philo->time_dead = ft_atoi(av[2]);
+    philo->count_meals = 0;
     philo->time_eat = ft_atoi(av[3]);
     philo->time_sleep = ft_atoi(av[4]);
     philo->last_eat = get_current_time();

@@ -32,6 +32,7 @@ typedef struct s_philo
     pthread_mutex_t my_mutex;
     bool is_full;
     int xtime;
+    int count_meals;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
@@ -115,6 +116,5 @@ bool end_simulation(t_table *table);
 
 
 void main_rotine(t_table *table);
-void main_operation(t_table *table, int flag);
 bool is_died(t_table *table);
 #endif

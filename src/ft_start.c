@@ -15,75 +15,75 @@
 
 void print_status(t_philo *philo, int status)
 {
-    if(get_bool(&philo->table->dead_lock,&philo->is_full) == true)
-        return;
     mutex_operation(&philo->table->printf_lock, LOCK);
-    if(status == TAKE && end_simulation(philo->table) == false) 
+    if(status == TAKE) 
         printf("%zu %d has taken a fork\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == EAT && end_simulation(philo->table) == false)
+    else if(status == EAT)
         printf("%zu %d is eating\n",time_diff(philo->table->start_time),philo->id);
-    else if(status == SLEEP && end_simulation(philo->table) == false)
+    else if(status == SLEEP)
         printf("%zu %d is sleeping\n",time_diff(philo->table->start_time),philo->id);
     else if(status == DEAD )
         printf("%zu %d died\n",philo->time_dead,philo->id);
     mutex_operation(&philo->table->printf_lock, UNLOCK);
 }
 
-void take_fork(t_philo *philo)
-{
-    int mat;
-    mat = 0;
+void take_fork(t_philo *philo) {
+    int mat = (philo->id + 1) % philo->table->qtphilo;
 
-    mat = (philo->id + 1) % philo->table->qtphilo;
-    if((philo->id % 2) == 0)
-    {
+    if ((philo->id % 2) == 0) {
         philo->r_fork = &philo->my_mutex;
         philo->l_fork = &philo->table->philo[mat].my_mutex;
-    }else{
+    } else {
         philo->l_fork = &philo->my_mutex;
         philo->r_fork = &philo->table->philo[mat].my_mutex;
     }
     mutex_operation(philo->l_fork, LOCK);
-    print_status(philo,TAKE);
-    if(end_simulation(philo->table) == true)
+    if (end_simulation(philo->table) == true) 
     {
         mutex_operation(philo->l_fork, UNLOCK);
         return;
-    }
+    } else 
+         print_status(philo, TAKE);
     mutex_operation(philo->r_fork, LOCK);
-    print_status(philo,TAKE);
-    if(end_simulation(philo->table) == true)
-    {
-        mutex_operation(philo->l_fork, UNLOCK);
+    if (end_simulation(philo->table) == true) {
+        mutex_operation(philo->l_fork, UNLOCK);  
+        mutex_operation(philo->r_fork, UNLOCK);
         return;
+    } else {
+        print_status(philo, TAKE);
     }
-      
 }
+
+      
 
 void eat(t_philo *philo)
 {
-    set_long(&philo->table->num_lock,&philo->last_eat,time_diff(philo->table->start_time));
-    mutex_operation(&philo->table->num_lock,LOCK);
-    philo->xtime--;
-    if(philo->xtime == 0)
-        philo->is_full = true;
-    philo->table->id_dead = philo->id;
-    mutex_operation(&philo->table->num_lock,UNLOCK);
-    print_status(philo,EAT);
-    ft_usleep(philo->time_eat);
-    mutex_operation(philo->l_fork, UNLOCK);
-    mutex_operation(philo->r_fork, UNLOCK);
+    if(end_simulation(philo->table) != true)
+    {
+        set_long(&philo->table->dead_lock,&philo->last_eat,time_diff(philo->table->start_time));
+        print_status(philo,EAT);
+        ft_usleep(philo->time_eat);
+        mutex_operation(philo->l_fork, UNLOCK);
+        mutex_operation(philo->r_fork, UNLOCK);
+        mutex_operation(&philo->table->num_lock,LOCK);
+        philo->count_meals++;
+        if(philo->count_meals == philo->xtime && philo->xtime > 0)
+            set_bool(&philo->table->dead_lock,&philo->is_full,true);
+        mutex_operation(&philo->table->num_lock,UNLOCK);
+    }
+   
 }
 void sleep_philo(t_philo *philo)
 {
+    if(end_simulation(philo->table) != true)
+    {
         print_status(philo,SLEEP);
         ft_usleep(philo->time_sleep);
+    }
 }
 void thinking(t_philo *philo)
 {
-        if(end_simulation(philo->table) == true 
-        || get_bool(&philo->table->dead_lock,&philo->is_full) == true)
-                return;
+    if(end_simulation(philo->table) != true)
         printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 }
 

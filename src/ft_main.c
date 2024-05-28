@@ -21,13 +21,14 @@ bool last_eat(t_philo *philo, t_table *table)
 
     last = get_long(&philo->table->dead_lock, &philo->time_dead);
     timenow = time_diff(philo->table->start_time) - get_long(&philo->table->dead_lock, &philo->last_eat);   
- //   mutex_operation(&table->num_lock,LOCK);
     if (timenow > last) 
     {
         set_bool(&table->dead_lock,&table->end,true);
-        philo->time_dead = timenow;
+        set_long(&table->dead_lock,&philo->time_dead,timenow);
+        mutex_operation(&table->dead_lock,LOCK);
+        philo->table->id_dead = philo->id;
+        mutex_operation(&table->dead_lock,UNLOCK);
         print_status(philo,DEAD);
-       // mutex_operation(&table->num_lock,UNLOCK);
         return (true);
     }
     return(false);
@@ -58,12 +59,10 @@ bool is_died(t_table *table)
     i = -1;
     bool died;
 
-    // if(get_bool(&table->dead_lock,&table->end) == true)
-    //     return(true);
-    if(last_time(table) == true)
-    {
+    if(get_bool(&table->dead_lock,&table->end) == true)
         return(true);
-    }
+    if(last_time(table) == true)
+        return(true);
     mutex_operation(&table->check,LOCK);
     died = true;
     while(++i < table->qtphilo)
@@ -75,6 +74,7 @@ bool is_died(t_table *table)
         }
     }
     mutex_operation(&table->check,UNLOCK);
+    set_bool(&table->check,&table->is_dead,died);
     return(died);
 }
 
@@ -89,13 +89,3 @@ void main_rotine(t_table *table)
         ;
 }
 
-
-void main_operation(t_table *table, int flag)
-{
-    if(flag ==  START)
-    {
-       
-    }   
-    else if(flag == WAIT)
-        pthread_join(table->main,NULL);
-}

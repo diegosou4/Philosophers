@@ -44,7 +44,7 @@ void philo_operation(t_table *table)
     }
     pthread_create(&table->main, NULL, (void *(*)(void *))main_rotine, table);
     table->start_time = get_current_time();
-    set_bool(&table->num_lock,&table->sync,true);
+    set_bool(&table->check,&table->sync,true);
     i = -1;
     while(++i < table->qtphilo)
             pthread_join(ptr[i].thread, NULL);
