@@ -13,6 +13,18 @@
 
 #include "../includes/philo.h"
 
+void give_forks(t_philo *philo)
+{
+    int mat; 
+    mat = (philo->id + 1) % philo->table->qtphilo;
+    if ((philo->id % 2) == 0) {
+        philo->r_fork = &philo->my_mutex;
+        philo->l_fork = &philo->table->philo[mat].my_mutex;
+    } else {
+        philo->l_fork = &philo->my_mutex;
+        philo->r_fork = &philo->table->philo[mat].my_mutex;
+    }
+}
 
 void start_philo(t_table *table, int ac, char **av)
 {
@@ -25,6 +37,11 @@ void start_philo(t_table *table, int ac, char **av)
     table->philo = malloc(sizeof(t_philo) * table->qtphilo);
     while(++i < table->qtphilo)
          give_philo(ac, av, &table->philo[i],table);
+    i = -1;
+    while(++i < table->qtphilo)
+    {   
+        give_forks(&table->philo[i]);
+    }
 }
 
 

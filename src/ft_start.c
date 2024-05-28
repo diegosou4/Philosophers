@@ -28,15 +28,7 @@ void print_status(t_philo *philo, int status)
 }
 
 void take_fork(t_philo *philo) {
-    int mat = (philo->id + 1) % philo->table->qtphilo;
-
-    if ((philo->id % 2) == 0) {
-        philo->r_fork = &philo->my_mutex;
-        philo->l_fork = &philo->table->philo[mat].my_mutex;
-    } else {
-        philo->l_fork = &philo->my_mutex;
-        philo->r_fork = &philo->table->philo[mat].my_mutex;
-    }
+   
     mutex_operation(philo->l_fork, LOCK);
     if (end_simulation(philo->table) == true) 
     {
