@@ -17,6 +17,8 @@ bool	last_eat(t_philo *philo, t_table *table)
 	size_t	timenow;
 	size_t	last;
 
+	if(get_bool(&table->dead_lock,&philo->is_full) == true)
+		return(false);
 	last = table->time_dead;
 	timenow = time_diff(philo->table->start_time)
 		- get_long(&philo->table->dead_lock, &philo->last_eat);
@@ -32,7 +34,7 @@ bool	dead_all_philos(t_table *table)
 	i = -1;
 	while (++i < table->qtphilo)
 	{
-		if (get_bool(&table->dead_lock, &table->philo[i].is_full) != true)
+		if (get_bool(&table->dead_lock, &table->philo[i + 1].is_full) != true)
 			return (false);
 	}
 	return (true);

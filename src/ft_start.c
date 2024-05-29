@@ -24,6 +24,8 @@ void	print_status(t_philo *philo, int status)
 	else if (status == SLEEP && !end_simulation(philo->table))
 		printf("%zu %d is sleeping\n", time_diff(philo->table->start_time),
 			philo->id);
+	else if(status == THINK && !end_simulation(philo->table))
+		printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 	else if (status == DEAD && end_simulation(philo->table) == true)
 		printf("%zu %d died\n", time_diff(philo->table->start_time), philo->id);
 	mutex_operation(&philo->table->printf_lock, UNLOCK);
@@ -86,7 +88,9 @@ void	sleep_philo(t_philo *philo, t_table *table)
 
 void	thinking(t_philo *philo)
 {
-	if (!end_simulation(philo->table))
-		printf("%zu %d is thinking\n", time_diff(philo->table->start_time),
-			philo->id);
+		size_t t_think;
+
+		t_think = philo->table->time_eat * 2 - philo->table->time_sleep;
+		print_status(philo, THINK);
+		usleep(t_think);
 }

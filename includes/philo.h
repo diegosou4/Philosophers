@@ -72,6 +72,7 @@ enum					e_philoflags
 	TAKE,
 	EAT,
 	SLEEP,
+	THINK
 };
 
 // Parse

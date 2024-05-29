@@ -84,7 +84,7 @@ void	give_philo(t_philo *philo, t_table *table)
 
 	if (!philo)
 		return ;
-	philo->id = i;
+	philo->id = i + 1;
 	i++;
 	philo->count_meals = 0;
 	philo->last_eat = 0;

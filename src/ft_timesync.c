@@ -32,7 +32,7 @@ int	ft_usleep(size_t milliseconds, t_table *table)
 	{
 		if (end_simulation(table) == true)
 			break ;
-		usleep(500);
+		usleep(100);
 	}
 	return (0);
 }

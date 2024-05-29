@@ -70,6 +70,8 @@ void	lone_philo(t_philo *philo)
 void	rotine(t_philo *philo)
 {
 	thread_syncrinize(philo->table);
+	if(philo->id % 2 == 0)
+		usleep(50);
 	while (!end_simulation(philo->table))
 	{
 		eat(philo, philo->table);
