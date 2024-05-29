@@ -26,6 +26,19 @@ bool last_eat(t_philo *philo, t_table *table)
     return(false);
 }
 
+bool dead_all_philos(t_table *table)
+{
+    int i;
+    i = -1;
+    while(++i < table->qtphilo)
+    {
+        if(get_bool(&table->dead_lock,&table->philo[i].is_full) != true)
+            return(false);
+    }    
+    return(true);
+
+
+}
 
 void main_rotine(t_table *table)
 {
@@ -35,6 +48,11 @@ void main_rotine(t_table *table)
     thread_syncrinize(table);
     while(!end_simulation(table))
     {
+        if(dead_all_philos(table) == true)
+        {
+            set_bool(&table->check,&table->end,true);
+            return;
+        }
         i = -1;
         while(++i < table->qtphilo && !end_simulation(table))
         {
@@ -42,6 +60,7 @@ void main_rotine(t_table *table)
             {
                 set_bool(&table->check,&table->end,true);
                 print_status(table->philo + i, DEAD);
+                return;
             }
         }
     }

@@ -48,7 +48,6 @@ typedef struct s_table
     int max_meals;
     int         qtphilo;
     size_t start_time;
-    size_t last_dead;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;

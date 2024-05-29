@@ -94,8 +94,7 @@ void rotine(t_philo *philo)
     thread_syncrinize(philo->table);
     while (!end_simulation(philo->table)) 
     {
-        if(get_bool(&philo->table->dead_lock,&philo->is_full) == true)
-            return;
+       
             eat(philo,philo->table);
             sleep_philo(philo,philo->table);
             thinking(philo);
