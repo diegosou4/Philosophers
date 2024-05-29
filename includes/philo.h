@@ -31,11 +31,7 @@ typedef struct s_philo
     pthread_t thread;
     pthread_mutex_t my_mutex;
     bool is_full;
-    int xtime;
     int count_meals;
-    size_t time_eat;
-    size_t time_dead;
-    size_t time_sleep;
     size_t last_eat;
     pthread_mutex_t *r_fork;
     pthread_mutex_t *l_fork;
@@ -49,11 +45,13 @@ typedef struct s_table
     bool    is_dead;
     bool    end;
     bool sync;
-    int xtime;
-    int id_dead;
+    int max_meals;
     int         qtphilo;
-    int num;
     size_t start_time;
+    size_t last_dead;
+    size_t time_eat;
+    size_t time_dead;
+    size_t time_sleep;
     pthread_t main;
     pthread_mutex_t check;
     pthread_mutex_t dead_lock;
@@ -89,7 +87,7 @@ void del_mutex_philo(t_philo *philo, int qtphilo);
 void mutex_table_operation(t_table *table,int flag);
 void mutex_operation(pthread_mutex_t *mutex, int flag);
 void philo_init(int ac,char **av);
-int ft_usleep(size_t milliseconds);
+int    ft_usleep(size_t milliseconds, t_table *table);
 
 // Time
 void print_status(t_philo *philo, int status);
@@ -101,9 +99,8 @@ size_t time_diff(size_t time);
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table);
 void rotine(t_philo *philo);
-bool thread_finish(t_philo *philo);
 // Getter and Setters
-
+bool last_eat(t_philo *philo, t_table *table);
 bool get_bool(pthread_mutex_t *mutex,bool *is_dead);
 void set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
 long get_long(pthread_mutex_t *mutex, size_t *value);
@@ -116,5 +113,4 @@ bool end_simulation(t_table *table);
 
 
 void main_rotine(t_table *table);
-bool is_died(t_table *table);
 #endif

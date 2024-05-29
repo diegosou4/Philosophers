@@ -31,10 +31,13 @@ void start_philo(t_table *table, int ac, char **av)
     int i;
     i = -1;
     if(ac == 6)
-        table->xtime = ft_atoi(av[5]);
+        table->max_meals = ft_atoi(av[5]);
     else
-        table->xtime = -1;
+        table->max_meals = -1;
     table->philo = malloc(sizeof(t_philo) * table->qtphilo);
+    table->time_dead = ft_atoi(av[2]);
+    table->time_eat = ft_atoi(av[3]);
+    table->time_sleep = ft_atoi(av[4]);
     while(++i < table->qtphilo)
          give_philo(ac, av, &table->philo[i],table);
     i = -1;
@@ -51,7 +54,7 @@ void philo_operation(t_table *table)
     i = -1; 
     t_philo *ptr;
     ptr = table->philo;
-    if(table->xtime == 0)
+    if(table->max_meals == 0)
         return;
     else if(table->qtphilo == 1)
         return;
@@ -65,29 +68,6 @@ void philo_operation(t_table *table)
     i = -1;
     while(++i < table->qtphilo)
             pthread_join(ptr[i].thread, NULL);
-    set_bool(&table->num_lock,&table->end,true);
+    set_bool(&table->check,&table->end,true);
     pthread_join(table->main, NULL);
-}
-
-bool thread_finish(t_philo *philo)
-{
-    bool res;
-    int i;
- 
-    t_table *ptr;
-    mutex_operation(&philo->table->num_lock,LOCK);
-    ptr = philo->table;
-    i = 0;
-    while(i < philo->table->qtphilo)
-    {
-        if(ptr->philo[i].xtime != 0)
-        {
-            mutex_operation(&philo->table->num_lock,UNLOCK);
-            return(false);
-        }
-        i++;
-    }
-    res = true;
-    mutex_operation(&philo->table->num_lock,UNLOCK);
-    return(res);
 }
