@@ -29,7 +29,6 @@ void print_status(t_philo *philo, int status)
 
 bool take_fork(t_philo *philo) 
 {
-   
     if(!end_simulation(philo->table))
         mutex_operation(philo->l_fork, LOCK);
     if (!end_simulation(philo->table)) 
@@ -46,7 +45,6 @@ bool take_fork(t_philo *philo)
 }
 
       
-
 void eat(t_philo *philo, t_table *table)
 {
     bool done;
@@ -59,11 +57,12 @@ void eat(t_philo *philo, t_table *table)
             set_long(&table->dead_lock,&philo->last_eat,time_diff(table->start_time));
             print_status(philo,EAT);
             ft_usleep(table->time_eat,philo->table);
-            mutex_operation(&philo->table->num_lock,LOCK);
+            mutex_operation(&philo->table->dead_lock,LOCK);
             philo->count_meals++;
+            mutex_operation(&philo->table->dead_lock,UNLOCK);
             if(philo->count_meals == table->max_meals && table->max_meals != -1)
-            set_bool(&philo->table->dead_lock,&philo->is_full,true);
-            mutex_operation(&philo->table->num_lock,UNLOCK);
+                set_bool(&philo->table->dead_lock,&philo->is_full,true);
+          
         }
     }
     if(done == true)
@@ -71,8 +70,6 @@ void eat(t_philo *philo, t_table *table)
         mutex_operation(philo->l_fork, UNLOCK);
         mutex_operation(philo->r_fork, UNLOCK);
     }
-       
-  
 }
 void sleep_philo(t_philo *philo, t_table *table)
 {
@@ -102,26 +99,4 @@ void rotine(t_philo *philo)
     
 }
 
-void philo_init(int ac, char **av)
-{
-    int i;
-    t_table *table;
-    t_philo *ptr;
-    int qtphilo;  
-    qtphilo = ft_atoi(av[1]);
-    if (qtphilo <= 0)
-    {
-        write(2, "Number Philo incorrent \n", 25);
-        exit(0);
-    }
-    table = malloc(sizeof(t_table));
-    table->qtphilo = qtphilo;
-    table->is_dead = false;
-    table->end = false;
-    table->sync = false;
-    mutex_table_operation(table,INIT);
-    start_philo(table,ac,av);
-    philo_operation(table);
-    // del_mutex_philo(table->philo,qtphilo);
-    // mutex_table_operation(table,DESTROY);
-}
+

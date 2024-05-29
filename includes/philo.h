@@ -27,7 +27,6 @@ typedef struct s_table t_table;
 typedef struct s_philo
 {
     int id;
-    int status;
     pthread_t thread;
     pthread_mutex_t my_mutex;
     bool is_full;
@@ -41,21 +40,19 @@ typedef struct s_philo
 
 typedef struct s_table
 {
-    int				dead_flag;
-    bool    is_dead;
-    bool    end;
-    bool sync;
-    int max_meals;
+    bool        is_dead;
+    bool        end;
+    bool        sync;
+    int         max_meals;
     int         qtphilo;
+    pthread_t main;
     size_t start_time;
     size_t time_eat;
     size_t time_dead;
     size_t time_sleep;
-    pthread_t main;
     pthread_mutex_t check;
     pthread_mutex_t dead_lock;
     pthread_mutex_t printf_lock;
-    pthread_mutex_t num_lock;
     t_philo *philo;
 } t_table;
 
@@ -77,39 +74,46 @@ enum philoflags{
 };
 
 
-
+// Parse
 int	ft_isdigit(char *str);
-int parse_philo(int ac,char **av);
 size_t	ft_atoi(const char *str);
-void give_philo(int ac,char **av, t_philo *philo,t_table *table);
-void del_mutex_philo(t_philo *philo, int qtphilo);
-void mutex_table_operation(t_table *table,int flag);
-void mutex_operation(pthread_mutex_t *mutex, int flag);
-void philo_init(int ac,char **av);
-int    ft_usleep(size_t milliseconds, t_table *table);
-
-// Time
-void print_status(t_philo *philo, int status);
-
-size_t	get_current_time(void);
-size_t time_diff(size_t time);
-
-// Rotine 
+void give_philo(t_philo *philo,t_table *table);
+int parse_philo(int ac,char **av);
+void philo_init(int ac, char **av);
+void give_forks(t_philo *philo);
 void start_philo(t_table *table, int ac, char **av);
 void philo_operation(t_table *table);
-void rotine(t_philo *philo);
-// Getter and Setters
+
+// Rotine 
+void print_status(t_philo *philo, int status);
+bool take_fork(t_philo *philo);
+void eat(t_philo *philo, t_table *table);
+void sleep_philo(t_philo *philo, t_table *table);
+void thinking(t_philo *philo);
+void rotine(t_philo *philo) ;
+
+// Main Rotine 
+void main_rotine(t_table *table);
+bool dead_all_philos(t_table *table);
 bool last_eat(t_philo *philo, t_table *table);
+
+// Macros
 bool get_bool(pthread_mutex_t *mutex,bool *is_dead);
 void set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
 long get_long(pthread_mutex_t *mutex, size_t *value);
 void set_long(pthread_mutex_t *mutex,size_t *dest, long value);
 
+// Mutex
+void mutex_table_operation(t_table *table,int flag);
+void mutex_operation(pthread_mutex_t *mutex, int flag);
+void del_mutex_philo(t_table *table);
+
+
+// Time and Sync
 void thread_syncrinize(t_table *table);
 bool end_simulation(t_table *table);
+int    ft_usleep(size_t milliseconds, t_table *table);
+size_t	get_current_time(void);
+size_t time_diff(size_t time);
 
-// Main Operation
-
-
-void main_rotine(t_table *table);
 #endif

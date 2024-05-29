@@ -15,7 +15,6 @@
 
 bool last_eat(t_philo *philo, t_table *table) 
 {
-    int i;
     size_t timenow;
     size_t last;
 
@@ -36,15 +35,12 @@ bool dead_all_philos(t_table *table)
             return(false);
     }    
     return(true);
-
-
 }
 
 void main_rotine(t_table *table)
 {
-
     int i;
-    
+       
     thread_syncrinize(table);
     while(!end_simulation(table))
     {
@@ -64,6 +60,5 @@ void main_rotine(t_table *table)
             }
         }
     }
-   
 }
 

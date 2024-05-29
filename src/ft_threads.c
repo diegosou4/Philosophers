@@ -39,7 +39,7 @@ void start_philo(t_table *table, int ac, char **av)
     table->time_eat = ft_atoi(av[3]);
     table->time_sleep = ft_atoi(av[4]);
     while(++i < table->qtphilo)
-         give_philo(ac, av, &table->philo[i],table);
+         give_philo(&table->philo[i],table);
     i = -1;
     while(++i < table->qtphilo)
     {   

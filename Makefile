@@ -14,9 +14,9 @@ Name = philo
 
 CC = cc -g 
 
-CFLAGS = -pthread -fsanitize=thread #-Wall -Wextra -Werror
+CFLAGS = -pthread  -Wall -Wextra -Werror
 
-SRC = ft_check.c ft_parse.c ft_start.c ft_time.c ft_mutex.c ft_threads.c  ft_macros.c ft_main.c ft_syncronize.c
+SRC = ft_parse.c ft_start.c ft_mutex.c ft_threads.c  ft_macros.c ft_main.c ft_timesync.c
 
 SRC_DIR = $(addprefix ./src/, $(SRC))
 
