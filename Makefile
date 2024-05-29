@@ -19,18 +19,18 @@ CFLAGS = -pthread  -Wall -Wextra -Werror -I./includes
 SRC = ft_parse.c ft_start.c ft_mutex.c ft_threads.c  ft_macros.c \
 		ft_main.c ft_timesync.c ft_free.c
 
-SRC_DIR = $(addprefix ./src/, $(SRC))
+SRC_DIR = ./src/
+OBJ_DIR = ./obj/
 
-SRCOBJ = obj/
-OBJ = $(addprefix $(SRCOBJ), $(SRC:/src/%.c=%.o))
+OBJ = $(SRC:%.c=$(OBJ_DIR)%.o)
 
 all: $(NAME)
 $(NAME): $(OBJ)
 	${CC} ${CFLAGS} main.c ${OBJ} -o $(NAME)
 
-$(SRCOBJ)%.o: src/%.c
-	@mkdir -p $(dir $@)
-	@${CC} ${CFLAGS} -c $< -o $@
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -rf $(SRCOBJ)

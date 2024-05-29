@@ -14,12 +14,6 @@
 
 void	free_philo(t_table *table)
 {
-	int	i;
-
-	i = -1;
-	while (++i < table->qtphilo)
-	{
-		free(&table->philo[i]);
-	}
+    free(table->philo);
 	free(table);
 }

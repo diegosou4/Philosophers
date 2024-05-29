@@ -33,6 +33,7 @@ void	philo_init(int ac, char **av)
 	philo_operation(table);
 	del_mutex_philo(table);
 	mutex_table_operation(table, DESTROY);
+
 	free_philo(table);
 }
 
