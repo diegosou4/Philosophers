@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:24:46 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/27 19:52:43 by diemorei         ###   ########.fr       */
+/*   Updated: 2024/06/03 19:18:33 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ bool	last_eat(t_philo *philo, t_table *table)
 	size_t	timenow;
 	size_t	last;
 
-	if (get_bool(&table->dead_lock, &philo->is_full) == true)
-		return (false);
 	last = table->time_dead;
 	timenow = time_diff(philo->table->start_time)
 		- get_long(&philo->table->dead_lock, &philo->last_eat);

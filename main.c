@@ -25,7 +25,6 @@ void	philo_init(int ac, char **av)
 	}
 	table = malloc(sizeof(t_table));
 	table->qtphilo = qtphilo;
-	table->is_dead = false;
 	table->end = false;
 	table->sync = false;
 	mutex_table_operation(table, INIT);

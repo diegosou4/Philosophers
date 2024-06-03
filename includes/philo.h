@@ -28,7 +28,6 @@ typedef struct s_philo
 	int					id;
 	pthread_t			thread;
 	pthread_mutex_t		my_mutex;
-	bool				is_full;
 	int					count_meals;
 	size_t				last_eat;
 	pthread_mutex_t		*r_fork;
@@ -39,7 +38,6 @@ typedef struct s_philo
 
 typedef struct s_table
 {
-	bool				is_dead;
 	bool				end;
 	bool				sync;
 	int					max_meals;

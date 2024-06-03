@@ -88,7 +88,6 @@ void	give_philo(t_philo *philo, t_table *table)
 	i++;
 	philo->count_meals = 0;
 	philo->last_eat = 0;
-	philo->is_full = false;
 	mutex_operation(&philo->my_mutex, INIT);
 	philo->table = table;
 }
