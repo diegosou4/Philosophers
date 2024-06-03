@@ -34,7 +34,7 @@ bool	dead_all_philos(t_table *table)
 	i = -1;
 	while (++i < table->qtphilo)
 	{
-		if (get_bool(&table->dead_lock, &table->philo[i + 1].is_full) != true)
+		if (get_bool(&table->dead_lock, &table->philo[i].is_full) >= table->max_meals)
 			return (false);
 	}
 	return (true);
