@@ -30,11 +30,15 @@ bool	last_eat(t_philo *philo, t_table *table)
 bool	dead_all_philos(t_table *table)
 {
 	int	i;
-
+	int meals;
+	meals = 0;
 	i = -1;
 	while (++i < table->qtphilo)
 	{
-		if (get_bool(&table->dead_lock, &table->philo[i].is_full) != true)
+		pthread_mutex_lock(&table->dead_lock);
+		meals = table->philo[i].count_meals;
+		pthread_mutex_unlock(&table->dead_lock);
+		if (meals < table->max_meals)
 			return (false);
 	}
 	return (true);
@@ -51,17 +55,16 @@ void	main_rotine(t_table *table)
 		{
 		if (dead_all_philos(table) == true)
 		{
-			set_bool(&table->check, &table->end, true);
+			set_bool(&table->dead_lock, &table->end, true);
 			return ;
 		}
 		}
-		
 		i = -1;
 		while (++i < table->qtphilo && !end_simulation(table))
 		{
 			if (last_eat(table->philo + i, table) == true)
 			{
-				set_bool(&table->check, &table->end, true);
+				set_bool(&table->dead_lock, &table->end, true);
 				print_status(table->philo + i, DEAD);
 				return ;
 			}

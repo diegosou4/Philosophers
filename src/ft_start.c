@@ -33,26 +33,23 @@ void	print_status(t_philo *philo, int status)
 
 void	take_fork(t_philo *philo)
 {
-	if (!end_simulation(philo->table))
-		mutex_operation(philo->l_fork, LOCK);
-	if (!end_simulation(philo->table))
-	{
-		mutex_operation(philo->r_fork, LOCK);
+		if(philo->id % 2 == 0)
+		{
+			mutex_operation(philo->r_fork, LOCK);
+			mutex_operation(philo->l_fork, LOCK);
+		}else{
+			mutex_operation(philo->l_fork, LOCK);
+			mutex_operation(philo->r_fork, LOCK);
+		}
 		print_status(philo, TAKE);
 		print_status(philo, TAKE);
-	}
-	else
-	{
-		mutex_operation(philo->l_fork, UNLOCK);
-	}
 }
 
 void	eat(t_philo *philo, t_table *table)
 {
-
-	take_fork(philo);
 	if (!end_simulation(philo->table))
 	{
+		take_fork(philo);
 		set_long(&table->dead_lock, &philo->last_eat,
 		time_diff(table->start_time));
 		print_status(philo, EAT);
@@ -60,29 +57,22 @@ void	eat(t_philo *philo, t_table *table)
 		mutex_operation(&philo->table->dead_lock, LOCK);
 		philo->count_meals++;
 		mutex_operation(&philo->table->dead_lock, UNLOCK);
-		if (philo->count_meals == table->max_meals 
-			&& table->max_meals != -1)
-			set_bool(&philo->table->dead_lock, &philo->is_full, true);
-		
-		}
-		mutex_operation(philo->l_fork, UNLOCK);
-		mutex_operation(philo->r_fork, UNLOCK);
+	}
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
 }
 		
 
 void	sleep_philo(t_philo *philo, t_table *table)
 {
-	if (!end_simulation(philo->table))
-	{
 		print_status(philo, SLEEP);
 		ft_usleep(table->time_sleep, table);
-	}
 }
 
 void	thinking(t_philo *philo)
 {
 		size_t t_think;
-
+		
 		t_think = (philo->table->time_eat * 2) - philo->table->time_sleep;
 		print_status(philo, THINK);
 		usleep(t_think);

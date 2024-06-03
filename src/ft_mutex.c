@@ -16,7 +16,6 @@ void	mutex_table_operation(t_table *table, int flag)
 {
 	mutex_operation(&table->dead_lock, flag);
 	mutex_operation(&table->printf_lock, flag);
-	mutex_operation(&table->check, flag);
 }
 
 void	mutex_operation(pthread_mutex_t *mutex, int flag)

@@ -50,9 +50,7 @@ void	start_philo(t_table *table, int ac, char **av)
 		give_philo(&table->philo[i], table);
 	i = -1;
 	while (++i < table->qtphilo)
-	{
 		give_forks(&table->philo[i]);
-	}
 }
 
 void	lone_philo(t_philo *philo)
@@ -100,10 +98,10 @@ void	philo_operation(t_table *table)
 	}
 	pthread_create(&table->main, NULL, (void *(*)(void *))main_rotine, table);
 	table->start_time = get_current_time();
-	set_bool(&table->check, &table->sync, true);
+	set_bool(&table->dead_lock, &table->sync, true);
 	i = -1;
 	while (++i < table->qtphilo)
 		pthread_join(ptr[i].thread, NULL);
-	set_bool(&table->check, &table->end, true);
+	set_bool(&table->dead_lock, &table->end, true);
 	pthread_join(table->main, NULL);
 }
