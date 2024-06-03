@@ -60,10 +60,10 @@ void	eat(t_philo *philo, t_table *table)
 		mutex_operation(&philo->table->dead_lock, LOCK);
 		philo->count_meals++;
 		mutex_operation(&philo->table->dead_lock, UNLOCK);
-		// if (philo->count_meals == table->max_meals 
-		// 	&& table->max_meals != -1)
-		// 	set_bool(&philo->table->dead_lock, &philo->is_full, true);
-		// 
+		if (philo->count_meals == table->max_meals 
+			&& table->max_meals != -1)
+			set_bool(&philo->table->dead_lock, &philo->is_full, true);
+		
 		}
 		mutex_operation(philo->l_fork, UNLOCK);
 		mutex_operation(philo->r_fork, UNLOCK);
