@@ -14,7 +14,7 @@ NAME = philo
 
 CC = cc -g 
 
-CFLAGS = -pthread  -Wall -Wextra -Werror -I./includes 
+CFLAGS = -pthread  -Wall -Wextra -Werror -I./includes #-fsanitize=thread
 
 SRC = ft_parse.c ft_start.c ft_mutex.c ft_threads.c  ft_macros.c \
 		ft_main.c ft_timesync.c ft_free.c
@@ -33,7 +33,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -rf $(SRCOBJ)
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
 	@rm -rf $(NAME)

@@ -15,7 +15,11 @@
 void	thread_syncrinize(t_table *table)
 {
 	while (get_bool(&table->dead_lock, &table->sync) != true)
+	{
+		usleep(10);
 		;
+	}
+		
 }
 
 bool	end_simulation(t_table *table)

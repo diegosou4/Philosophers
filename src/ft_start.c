@@ -14,7 +14,7 @@
 
 void	print_status(t_philo *philo, int status)
 {
-	mutex_operation(&philo->table->printf_lock, LOCK);
+	pthread_mutex_lock(&philo->table->printf_lock);
 	if (status == TAKE && !end_simulation(philo->table))
 		printf("%zu %d has taken a fork\n", time_diff(philo->table->start_time),
 			philo->id);
@@ -28,19 +28,14 @@ void	print_status(t_philo *philo, int status)
 		printf("%zu %d is thinking\n",time_diff(philo->table->start_time),philo->id);
 	else if (status == DEAD && end_simulation(philo->table) == true)
 		printf("%zu %d died\n", time_diff(philo->table->start_time), philo->id);
-	mutex_operation(&philo->table->printf_lock, UNLOCK);
+	pthread_mutex_unlock(&philo->table->printf_lock);
 }
 
 void	take_fork(t_philo *philo)
-{
-		if(philo->id % 2 == 0)
-		{
-			mutex_operation(philo->r_fork, LOCK);
-			mutex_operation(philo->l_fork, LOCK);
-		}else{
-			mutex_operation(philo->l_fork, LOCK);
-			mutex_operation(philo->r_fork, LOCK);
-		}
+{	
+	
+		pthread_mutex_lock(philo->l_fork);
+		pthread_mutex_lock(philo->r_fork);
 		print_status(philo, TAKE);
 		print_status(philo, TAKE);
 }
@@ -54,9 +49,9 @@ void	eat(t_philo *philo, t_table *table)
 		time_diff(table->start_time));
 		print_status(philo, EAT);
 		ft_usleep(table->time_eat, philo->table);
-		mutex_operation(&philo->table->dead_lock, LOCK);
+		pthread_mutex_lock(&table->dead_lock);
 		philo->count_meals++;
-		mutex_operation(&philo->table->dead_lock, UNLOCK);
+		pthread_mutex_unlock(&table->dead_lock);
 	}
 		pthread_mutex_unlock(philo->l_fork);
 		pthread_mutex_unlock(philo->r_fork);
