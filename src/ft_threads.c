@@ -16,7 +16,7 @@ void	give_forks(t_philo *philo)
 {
 	int	mat;
 
-	mat = (philo->id + 1) % philo->table->qtphilo;
+	mat = (philo->id) % philo->table->qtphilo;
 	if (philo->table->qtphilo == 1)
 	{
 		philo->r_fork = &philo->my_mutex;

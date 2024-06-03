@@ -88,7 +88,7 @@ void					philo_operation(t_table *table);
 
 // Rotine
 void					print_status(t_philo *philo, int status);
-bool					take_fork(t_philo *philo);
+void					take_fork(t_philo *philo);
 void					eat(t_philo *philo, t_table *table);
 void					sleep_philo(t_philo *philo, t_table *table);
 void					thinking(t_philo *philo);
