@@ -6,7 +6,7 @@
 /*   By: diegmore <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 13:32:27 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/29 18:29:28 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/06/03 18:25:48 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ void	thread_syncrinize(t_table *table)
 	while (get_bool(&table->dead_lock, &table->sync) != true)
 	{
 		usleep(10);
-		;
 	}
-		
 }
 
 bool	end_simulation(t_table *table)

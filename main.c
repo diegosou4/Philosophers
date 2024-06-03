@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "includes/philo.h"
 
 void	philo_init(int ac, char **av)
 {
-	t_table *table;
-	int qtphilo;
+	t_table	*table;
+	int		qtphilo;
+
 	qtphilo = ft_atoi(av[1]);
 	if (qtphilo <= 0)
 	{
@@ -33,21 +33,21 @@ void	philo_init(int ac, char **av)
 	philo_operation(table);
 	del_mutex_philo(table);
 	mutex_table_operation(table, DESTROY);
-
 	free_philo(table);
 }
 
-int main(int ac,char **av)
+int	main(int ac, char **av)
 {
-	if(ac == 5 || ac == 6)
+	if (ac == 5 || ac == 6)
 	{
-		if(parse_philo(ac,av) == 1)
+		if (parse_philo(ac, av) == 1)
 		{
-			philo_init(ac,av);
+			philo_init(ac, av);
 		}
 	}
-	else{
+	else
+	{
 		printf("Number Arguments Incorret!!\n");
 	}
-	return(0);
+	return (0);
 }

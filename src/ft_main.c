@@ -17,8 +17,8 @@ bool	last_eat(t_philo *philo, t_table *table)
 	size_t	timenow;
 	size_t	last;
 
-	if(get_bool(&table->dead_lock,&philo->is_full) == true)
-		return(false);
+	if (get_bool(&table->dead_lock, &philo->is_full) == true)
+		return (false);
 	last = table->time_dead;
 	timenow = time_diff(philo->table->start_time)
 		- get_long(&philo->table->dead_lock, &philo->last_eat);
@@ -30,7 +30,8 @@ bool	last_eat(t_philo *philo, t_table *table)
 bool	dead_all_philos(t_table *table)
 {
 	int	i;
-	int meals;
+	int	meals;
+
 	meals = 0;
 	i = -1;
 	while (++i < table->qtphilo)
@@ -51,13 +52,13 @@ void	main_rotine(t_table *table)
 	thread_syncrinize(table);
 	while (!end_simulation(table))
 	{
-		if(table->max_meals != -1)
+		if (table->max_meals != -1)
 		{
-		if (dead_all_philos(table) == true)
-		{
-			set_bool(&table->dead_lock, &table->end, true);
-			return ;
-		}
+			if (dead_all_philos(table) == true)
+			{
+				set_bool(&table->dead_lock, &table->end, true);
+				return ;
+			}
 		}
 		i = -1;
 		while (++i < table->qtphilo && !end_simulation(table))

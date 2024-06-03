@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 16:16:13 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/29 18:28:46 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/06/03 18:25:18 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	lone_philo(t_philo *philo)
 void	rotine(t_philo *philo)
 {
 	thread_syncrinize(philo->table);
-	if(philo->id % 2 == 0)
+	if (philo->id % 2 == 0)
 		usleep(50);
 	while (!end_simulation(philo->table))
 	{

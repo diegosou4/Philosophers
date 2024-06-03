@@ -49,7 +49,6 @@ typedef struct s_table
 	size_t				time_eat;
 	size_t				time_dead;
 	size_t				time_sleep;
-	// pthread_mutex_t		check;
 	pthread_mutex_t		dead_lock;
 	pthread_mutex_t		printf_lock;
 	t_philo				*philo;
