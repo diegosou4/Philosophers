@@ -1,27 +1,25 @@
 # Philosophers
 
 ## Visão Geral
-Trabalhar com threads e algo interessante afinal e uma forma de IPC, para comecamos precisamos entender o problema, e sempre bom comecamos com Parse, o que o usuario vai nos da e o que vamos fazer com essa informacao.
-Na chamada do nosso progama o usuario tem que passar a quantidade de Threads, O tempo de morte do Filosofo, o tempo que ele vai comer, e o tempo que ele vai dormir e ele pode passar tambem quantas vezes o filosofo vai comer se quiser, ou seja, 
 
-Ex ./philo [NF] [TD] [TA] [TD] [QA] , sendo o ultimo opcional.
+Trabalhar com threads é algo interessante, afinal é uma forma de IPC (Inter-Process Communication). Para começarmos, precisamos entender o problema, e é sempre bom começarmos com a análise do que o usuário vai nos fornecer e o que vamos fazer com essa informação.
 
-Mas vamos ao problema, com threads nos utilizamos a mesma variavel em diferentes threads, fazendo assim consultas,alteracoes. Entao para gente nao ter race condition,temos que fazer de uma forma muito bem sincronizada, para isso
-temos os mutex, de forma que o mutex bloqueia aquela variavel para thread fazer o que precisa e apos sua alteracao voce pode liberar e a outra thread ja vai enxergar aquela variavel com valor atualizado, pense como se fosse travas 
-obrigando a voce esperar a alteracao ser feita para voce poder continuar. O objetivo do filosofo e todo mundo comer sendo que e necessario 2 garfos sendo que cada 1 so tem um, entao precisamos criar uma forma aonde todos possam se alimentar
-de acordo com tempo passado. 
+Na chamada do nosso programa, o usuário tem que passar a quantidade de threads, o tempo de morte do filósofo, o tempo que ele vai comer, e o tempo que ele vai dormir. Ele pode passar também quantas vezes o filósofo vai comer, se quiser. Ou seja:
 
-Threads podem parecer rapidas comparada a processos, mas devem ser muito bem organizadas e muito bem otimizadas para que tudo ocora bem.Afinal no nosso problema nao podemos avisar para o filosofos que um morreu, entao
-criamos outra thread para monitorar nossa refeicao, ela tem como principal objetivo verificar a ultima vez que os filosofos comeram e se todo mundo ja comeu a quantidade x escolhida pelo usuario. 
+Ex: `./philo [NF] [TD] [TA] [TD] [QA]`, sendo o último opcional.
 
-### Meu monitor
+## Problema
+
+Com threads, utilizamos a mesma variável em diferentes threads, realizando consultas e alterações. Para evitar condições de corrida (race conditions), precisamos de uma forma bem sincronizada de trabalhar. Para isso, usamos mutexes, que bloqueiam a variável para que uma thread faça o que precisa e, após a alteração, libere-a para que outra thread enxergue a variável com o valor atualizado. Pense nisso como travas que obrigam você a esperar a alteração ser feita antes de continuar. O objetivo dos filósofos é que todos comam, sendo que é necessário 2 garfos, e cada um só tem um. Precisamos criar uma forma em que todos possam se alimentar de acordo com o tempo passado.
+
+Threads podem parecer rápidas em comparação com processos, mas devem ser muito bem organizadas e otimizadas para que tudo ocorra bem. No nosso problema, não podemos avisar aos filósofos que um morreu, então criamos outra thread para monitorar nossa refeição. Ela tem como principal objetivo verificar a última vez que os filósofos comeram e se todos já comeram a quantidade escolhida pelo usuário.
+
+### Monitor
+
 ![MONITOR](img/Monitor.png)
 
-A solucao e simples utilizando a ideia do impar e par, impar faz seu garfo fica na mao esquerda e pega o garfo do colega a frente, utilizamos um usleep para que os pares comecem depois, assim evitamos data races, ou seja eles tentarem pegar o garfo ao mesmo tempo,
-isso e importante, precisamos deixar-los numa sincronia aonde isso nao aconteca. 
+A solução é simples utilizando a ideia de ímpares e pares. Os ímpares pegam o garfo à sua esquerda e depois pegam o garfo do colega à frente. Utilizamos um `usleep` para que os pares comecem depois, assim evitamos condições de corrida, ou seja, evitamos que tentem pegar os garfos ao mesmo tempo. Isso é importante; precisamos sincronizá-los para evitar esse tipo de situação.
 
-Para nosso monitor temos duas funcoes aonde vao verificar a ultima vez que alguem comeu ou se todos ja estao sastifeitos. temos alguns spinlocks utilizados exatamente para comecar toda rotina apos 
-a criacao de todos. Apos isso vamos trabalhar travando e destravando as variaveis e verificando, de forma que nenhuma tenha qualquer tipo de race contion ou data race.
-
+Para nosso monitor, temos duas funções que verificam a última vez que alguém comeu ou se todos já estão satisfeitos. Temos alguns spinlocks utilizados para começar toda a rotina após a criação de todos. Depois disso, trabalhamos travando e destravando as variáveis e verificando, de forma que não ocorra qualquer tipo de condição de corrida ou de corrida de dados.
 
 ![IMAGEM](img/example.png)
