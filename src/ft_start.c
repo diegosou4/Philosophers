@@ -59,8 +59,11 @@ void	eat(t_philo *philo, t_table *table)
 
 void	sleep_philo(t_philo *philo, t_table *table)
 {
-	print_status(philo, SLEEP);
-	ft_usleep(table->time_sleep, table);
+	if (!end_simulation(philo->table))
+	{
+		print_status(philo, SLEEP);
+		ft_usleep(table->time_sleep, table);
+	}
 }
 
 void	thinking(t_philo *philo)
@@ -68,6 +71,9 @@ void	thinking(t_philo *philo)
 	size_t	t_think;
 
 	t_think = (philo->table->time_eat * 2) - philo->table->time_sleep;
-	print_status(philo, THINK);
-	usleep(t_think);
+	if (!end_simulation(philo->table))
+	{
+		print_status(philo, THINK);
+		usleep(t_think);
+	}
 }
