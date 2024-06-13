@@ -6,7 +6,7 @@
 /*   By: diegmore <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:22:36 by diegmore          #+#    #+#             */
-/*   Updated: 2024/04/23 14:56:04 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/06/13 12:08:57 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 void	philo_init(int ac, char **av)
 {
 	t_table	*table;
-	int		qtphilo;
+	size_t	qtphilo;
 
-	qtphilo = ft_atoi(av[1]);
-	if (qtphilo <= 0)
+	qtphilo = ft_atoil(av[1]);
+	if (qtphilo <= 0 || qtphilo > INT_MAX)
 	{
 		write(2, "Number Philo incorrent \n", 25);
-		exit(0);
+		return ;
 	}
 	table = malloc(sizeof(t_table));
-	table->qtphilo = qtphilo;
+	table->qtphilo = ft_atoi(av[1]);
 	table->end = false;
 	table->sync = false;
 	mutex_table_operation(table, INIT);
@@ -40,9 +40,9 @@ int	main(int ac, char **av)
 	if (ac == 5 || ac == 6)
 	{
 		if (parse_philo(ac, av) == 1)
-		{
 			philo_init(ac, av);
-		}
+		else
+			return (0);
 	}
 	else
 	{

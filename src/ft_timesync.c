@@ -16,7 +16,7 @@ void	thread_syncrinize(t_table *table)
 {
 	while (get_bool(&table->dead_lock, &table->sync) != true)
 	{
-		usleep(10);
+		usleep(50);
 	}
 }
 
@@ -34,7 +34,7 @@ int	ft_usleep(size_t milliseconds, t_table *table)
 	{
 		if (end_simulation(table) == true)
 			break ;
-		usleep(50);
+		usleep(100);
 	}
 	return (0);
 }

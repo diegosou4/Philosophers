@@ -6,7 +6,7 @@
 /*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 16:24:40 by diegmore          #+#    #+#             */
-/*   Updated: 2024/05/29 18:19:07 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/06/10 11:25:40 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ int	parse_philo(int ac, char **av)
 	{
 		if (ft_isdigit(av[i]) == 1 || ft_atoi(av[i]) <= 0)
 		{
-			printf("Erro parse\n");
-			exit(0);
+			printf("Only number is accept!\n");
+			return (0);
 		}
 		i++;
 	}
