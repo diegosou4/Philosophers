@@ -18,7 +18,7 @@ void	philo_init(int ac, char **av)
 	size_t	qtphilo;
 
 	qtphilo = ft_atoil(av[1]);
-	if (qtphilo <= 0 || qtphilo > INT_MAX)
+	if (qtphilo <= 0 || qtphilo > 200)
 	{
 		write(2, "Number Philo incorrent \n", 25);
 		return ;

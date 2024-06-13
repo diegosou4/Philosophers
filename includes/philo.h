@@ -116,7 +116,7 @@ bool					end_simulation(t_table *table);
 int						ft_usleep(size_t milliseconds, t_table *table);
 size_t					get_current_time(void);
 size_t					time_diff(size_t time);
-
+int	ft_strlen(char *av);
 //
 
 void					free_philo(t_table *table);

@@ -14,7 +14,7 @@ NAME = philo
 
 CC = cc -g 
 
-CFLAGS = -pthread  -Wall -Wextra -Werror -I./includes #-fsanitize=thread
+CFLAGS = -pthread  -Wall -Wextra -Werror -I./includes -fsanitize=thread
 
 SRC = ft_parse.c ft_start.c ft_mutex.c ft_threads.c  ft_macros.c \
 		ft_main.c ft_timesync.c ft_free.c

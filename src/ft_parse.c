@@ -106,5 +106,13 @@ int	parse_philo(int ac, char **av)
 		}
 		i++;
 	}
+	if(ac == 6)
+	{
+			if(ft_atoil(av[5]) > INT_MAX)
+			{
+				printf("Less meals please!\n");
+				return (0);
+			}
+	}
 	return (1);
 }

@@ -52,9 +52,11 @@ void	eat(t_philo *philo, t_table *table)
 		pthread_mutex_lock(&table->dead_lock);
 		philo->count_meals++;
 		pthread_mutex_unlock(&table->dead_lock);
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
 	}
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
+	
+	
 }
 
 void	sleep_philo(t_philo *philo, t_table *table)
@@ -71,9 +73,9 @@ void	thinking(t_philo *philo)
 	size_t	t_think;
 
 	t_think = (philo->table->time_eat * 2) - philo->table->time_sleep;
-	if (!end_simulation(philo->table))
+	if (end_simulation(philo->table) == false)
 	{
 		print_status(philo, THINK);
-		usleep(t_think);
+		ft_usleep(t_think, philo->table);
 	}
 }

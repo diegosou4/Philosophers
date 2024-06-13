@@ -17,3 +17,14 @@ void	free_philo(t_table *table)
 	free(table->philo);
 	free(table);
 }
+int ft_strlen(char *av)
+{
+	int i;
+	i = 0;
+
+	while(av[i] != '\0')
+	{
+		i++;
+	}
+	return(i);
+}
