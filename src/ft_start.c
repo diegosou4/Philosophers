@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_start.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diemorei <diemorei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: diegmore <diegmore@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 12:23:44 by diegmore          #+#    #+#             */
-/*   Updated: 2024/06/03 18:26:08 by diegmore         ###   ########.fr       */
+/*   Updated: 2024/06/21 09:55:10 by diegmore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,14 @@ void	thinking(t_philo *philo)
 {
 	size_t	t_think;
 
-	t_think = (philo->table->time_eat * 2) - philo->table->time_sleep;
 	if (end_simulation(philo->table) == false)
 	{
 		print_status(philo, THINK);
+		if(philo->table->qtphilo % 2 == 0)
+			return;
+		t_think = (philo->table->time_eat * 2) - philo->table->time_sleep;
+		if(t_think < 0)
+			t_think = 0;
 		ft_usleep(t_think, philo->table);
 	}
 }
